@@ -1,0 +1,19 @@
+# Configuração e segredos locais
+.env
+.env.*
+!.env.example
+**/*.env
+**/*.env.*
+!**/*.env.example
+*.pem
+*.key
+*.p12
+*.jks
+
+# Artefatos locais
+backend/target/
+*.log
+.idea/
+.vscode/*.local.json
+Thumbs.db
+Desktop.ini
