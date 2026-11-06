@@ -21,10 +21,10 @@ function pageComo(){
   return '<section class="section"><div class="wrap">'+
   '<div class="sec-head center"><span class="eyebrow">'+ic('route')+' Passo a passo</span><h2>Como funciona a TaskGO</h2>'+
   '<p>Transparência do início ao fim — para quem contrata e para quem trabalha.</p></div>'+
-  blocos.map((b,bi)=>'<h3 style="margin:'+(bi?'60px':'0')+' 0 22px;font-size:1.3rem">'+b[0]+'</h3><div class="grid g3">'+
-    b[1].map(x=>'<div class="card card-hover"><div class="ico-box">'+ic(x[0])+'</div><h3 style="margin:16px 0 8px;font-size:1.02rem">'+x[1]+'</h3><p class="muted" style="font-size:.9rem">'+x[2]+'</p></div>').join('')+'</div>').join('')+
-  '<div class="ribbon" style="margin-top:60px"><h2>Pronto para começar?</h2><p>Faça seu primeiro pedido e receba a estimativa em segundos. Sem cadastro obrigatório para simular.</p>'+
-  '<div style="display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap"><a class="btn btn-ghost btn-lg" href="#/contratar">Contratar serviço</a><a class="btn btn-lg" style="background:rgba(255,255,255,.16);color:#fff" href="#/entrar?tipo=profissional">Trabalhar na TaskGO</a></div></div>'+
+  blocos.map(b=>'<h3 class="lp-subhead">'+b[0]+'</h3><div class="grid g3">'+
+    b[1].map(x=>'<div class="card card-hover lp-feature"><div class="ico-box">'+ic(x[0])+'</div><h3>'+x[1]+'</h3><p>'+x[2]+'</p></div>').join('')+'</div>').join('')+
+  '<div class="ribbon lp-ribbon-gap"><h2>Pronto para começar?</h2><p>Faça seu primeiro pedido e receba a estimativa em segundos. Sem cadastro obrigatório para simular.</p>'+
+  '<div class="lp-actions"><a class="btn btn-ghost btn-lg" href="#/contratar">Contratar serviço</a><a class="btn btn-lg lp-btn-line" href="#/entrar?tipo=profissional">Trabalhar na TaskGO</a></div></div>'+
   '</div></section>';
 }
 
