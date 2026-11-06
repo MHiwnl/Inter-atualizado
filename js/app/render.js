@@ -9,7 +9,6 @@ function render(){
   if(chatPollTimer){clearInterval(chatPollTimer);chatPollTimer=null;}
   const p=route.page;
   if(p!=='contratar')W.presetService='';
-  document.body.classList.toggle('lp',!['painel','seguranca','ajuda','contato','legal','contratar'].includes(p));
   let body='',full=false;
   if(p==='entrar'){body=pageEntrar();full=true;}
   else if(p==='recuperar'){body=pageRecuperar();full=true;}
