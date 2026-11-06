@@ -24,7 +24,7 @@ function dashConfig(){
   (isPro?'<div class="field"><label>Categoria principal</label><select class="select" name="service">'+SERVICES.map(s=>'<option value="'+s.id+'" '+(u.service===s.id?'selected':'')+'>'+s.n+'</option>').join('')+'</select></div>':
    '<div class="field"><label>Data de nascimento</label><input class="input" type="date" name="birth" value="'+esc(u.birth||'')+'"></div>')+
   '</div>'+
-  '<div class="field"><label>Endereço principal</label><input class="input" name="address" value="'+esc(u.address)+'" placeholder="Rua, número, bairro, cidade"></div>'+
+  '<div class="field"><label>Endereço principal</label><textarea class="textarea textarea-curta" name="address" rows="2" placeholder="Rua, número, bairro, cidade" onkeydown="if(event.key===\'Enter\')event.preventDefault()">'+esc(u.address)+'</textarea></div>'+
   (isPro?'<div class="field"><label>Sobre você (aparece no seu perfil público)</label><textarea class="textarea" name="bio">'+esc(u.bio)+'</textarea></div>':'')+
   '<button class="btn btn-grad">'+ic('check')+' Salvar alterações</button></form>'+
 

@@ -33,7 +33,7 @@ function dashAgenda(){
   const sel=dias[agendaDia];
   const total=doDia.reduce((a,b)=>a+(b.v||0),0);
   return dashHead('Agenda','Toque em um dia para ver os atendimentos.','<button class="btn btn-ghost" onclick="bloquearHorario()">'+ic('plus')+' Bloquear horário</button>')+
-  '<div class="scroll-x" style="margin-bottom:22px"><div class="grid" style="grid-template-columns:repeat(7,minmax(78px,1fr));gap:10px;min-width:580px">'+
+  '<div style="margin-bottom:22px"><div class="grid agenda-dias">'+
   dias.map((d,i)=>{const q=evts.filter(e=>e.d===i).length;
     return '<div class="card center dia '+(i===agendaDia?'sel':'')+'" style="padding:14px 8px" onclick="agendaDia='+i+';render()">'+
     '<span class="muted" style="font-size:.72rem;text-transform:uppercase">'+(i===0?'HOJE':d.toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','').toUpperCase())+'</span>'+

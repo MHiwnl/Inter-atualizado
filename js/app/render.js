@@ -25,7 +25,7 @@ function render(){
   else if(p==='legal')body=pageLegal();
   else if(p==='contratar')body=pageContratar();
   else body=pageHome();
-  document.getElementById('root').innerHTML=header()+'<div class="card" role="status" style="max-width:1180px;margin:10px auto;padding:10px 16px;border-color:var(--warn);color:var(--warn);font-size:.85rem">Pagamentos, carteira e saques estão desativados. Valores demonstrativos não são dinheiro real.</div>'+body+(full?'':footer().replace(/Pagamento protegido[^<]*/, 'Pagamentos indisponíveis neste ambiente'))+
+  document.getElementById('root').innerHTML=header()+body+(full?'':footer().replace(/Pagamento protegido[^<]*/, 'Pagamentos indisponíveis neste ambiente'))+
     (p==='painel'||p==='entrar'?'':'<button class="fab-help" onclick="abrirChatSuporte()" title="Ajuda">'+ic('chat')+'</button>');
   if(!DEMO_MODE&&p==='home'){
     const root=document.getElementById('root');

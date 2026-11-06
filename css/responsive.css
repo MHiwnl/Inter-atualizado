@@ -9,9 +9,9 @@
   .auth-side{display:none}
   .foot-grid{grid-template-columns:1fr 1fr}
   .dash{grid-template-columns:1fr}
-  .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);display:flex;gap:6px;overflow-x:auto;padding:12px}
+  .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px;overflow:visible;padding:12px}
   .side .side-user,.side .side-group{display:none}
-  .side a{white-space:nowrap;margin:0}
+  .side a{margin:0;padding:8px 11px;font-size:.84rem;border:1px solid var(--line)}
 }
 @media (max-width:880px){
   .nav-links{display:none}

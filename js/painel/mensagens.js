@@ -16,7 +16,7 @@ function dashMensagens(){
   '<div class="card" style="padding:12px">'+list.map(ch=>{
     const pp=chatPeer(ch),last=ch.msgs[ch.msgs.length-1]||{t:'Conversa iniciada após a confirmação do pedido.'},oo=S.orders.find(x=>x.id===ch.orderId);
     return '<div class="rowitem" style="cursor:pointer;'+(ch.id===chatAtivo?'border-color:var(--brand)':'')+'" onclick="chatAtivo=\''+ch.id+'\';render()">'+avatar({name:pp.name},40)+
-    '<div class="grow"><b>'+esc(pp.name)+'</b><small style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(last.t)+'</small></div>'+
+    '<div class="grow"><b>'+esc(pp.name)+'</b><small style="display:block">'+esc(last.t)+'</small></div>'+
     (oo?'<span class="tag tag-muted">'+svc(oo.service).n.split(' ')[0]+'</span>':'')+'</div>';
   }).join('')+'</div>'+
   '<div class="card"><div style="display:flex;align-items:center;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--line);margin-bottom:16px">'+

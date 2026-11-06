@@ -49,7 +49,7 @@ function pageDash(){
   else if(sub==='desempenho')content=dashDesempenho();
   else if(sub==='oportunidades')content=dashOportunidades();
   else content=dashVisao();
-  return '<div class="dash">'+side+'<main class="dash-main">'+content+'</main></div>';
+  return '<div class="dash">'+side+'<main class="dash-main">'+dashTools()+content+'</main></div>';
 }
 function dashHead(t,s,actions){
   return '<div class="dash-head"><div><h2>'+t+'</h2><p>'+s+'</p></div><div style="display:flex;gap:10px;flex-wrap:wrap">'+(actions||'')+'</div></div>';

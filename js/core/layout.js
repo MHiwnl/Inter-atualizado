@@ -1,17 +1,27 @@
 /* ---------- LAYOUT ---------- */
 const NAV=[['home','Início'],['servicos','Serviços'],['como-funciona','Como Funciona'],['profissionais','Para Profissionais'],['sobre','Quem Somos'],['planos','Planos']];
-function header(){
-  const u=me();
-  const unreadCount=u?myNotifs().filter(n=>!n.read).length:0;
-  const links=NAV.map(([p,l])=>'<a href="#/'+p+'" class="'+(route.page===p?'active':'')+'">'+l+'</a>').join('');
+function themeBtn(){
   const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  return '<button class="icon-btn" onclick="toggleTheme()" title="Alternar tema">'+ic(dark?'sun':'moon')+'</button>';
+}
+function bellBtn(){
+  const unreadCount=me()?myNotifs().filter(n=>!n.read).length:0;
+  return '<a class="icon-btn" href="#/painel/notificacoes" title="Notifica\u00e7\u00f5es" aria-label="Notifica\u00e7\u00f5es, '+unreadCount+' n\u00e3o lidas" style="position:relative">'+ic('bell')+(unreadCount?'<span style="position:absolute;top:-4px;right:-5px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:var(--danger);color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center">'+(unreadCount>9?'9+':unreadCount)+'</span>':'')+'</a>';
+}
+/* Botões globais do painel: fazem parte do dash, em todas as telas dele. */
+function dashTools(){return '<div class="dash-tools">'+themeBtn()+bellBtn()+'</div>';}
+function header(){
+  /* O painel não usa a barra do site. */
+  if(route.page==='painel')return '';
+  const u=me();
+  const links=NAV.map(([p,l])=>'<a href="#/'+p+'" class="'+(route.page===p?'active':'')+'">'+l+'</a>').join('');
   return '<header class="site"><div class="wrap"><nav class="nav">'+
     '<a href="#/home" class="logo"><span class="lt">Task<b>GO</b></span></a>'+
     '<div class="nav-links">'+links+'</div>'+
     '<div class="nav-right">'+
-      '<button class="icon-btn" onclick="toggleTheme()" title="Alternar tema">'+ic(dark?'sun':'moon')+'</button>'+
+      themeBtn()+
       (u
-        ? '<a class="icon-btn" href="#/painel/notificacoes" title="Notifica\u00e7\u00f5es" aria-label="Notifica\u00e7\u00f5es, '+unreadCount+' n\u00e3o lidas" style="position:relative">'+ic('bell')+(unreadCount?'<span style="position:absolute;top:-4px;right:-5px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:var(--danger);color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center">'+(unreadCount>9?'9+':unreadCount)+'</span>':'')+'</a>'+
+        ? bellBtn()+
           '<a class="btn btn-ghost btn-sm" href="#/painel">'+avatar(u,22)+' Painel</a>'
         : '<a class="btn btn-ghost btn-sm" href="#/entrar">'+ic('user')+' Entrar</a>'+
           '<a class="btn btn-primary btn-sm" href="#/servicos">Explorar serviços '+ic('arrow')+'</a>')+
