@@ -8,38 +8,35 @@ function pageEntrar(){
   const isLogin=A.mode==='login';
   return '<div class="auth-wrap">'+
   '<div class="auth-side"><a href="#/home" class="logo"><span class="lt">Task<b>GO</b></span></a>'+
-  '<h2>O profissional certo, no momento certo, com segurança.</h2>'+
-  '<ul class="list-check">'+[
-    'Estimativa de preço por IA antes de contratar',
-    'Ultima localizacao compartilhada pelo profissional, quando disponivel',
-    'Código de chegada e pagamento protegido',
-    'Carteira com PIX e saque quando quiser'
-  ].map(t=>'<li>'+ic('checkCircle')+'<span>'+t+'</span></li>').join('')+'</ul>'+
+  '<p class="lp-auth-slogan">O profissional certo, no momento certo, com segurança.</p>'+
+  '<ul class="lp-status-list">'+[
+    ['parcial','Pedido, aceite, conversa e acompanhamento no mesmo lugar'],
+    ['parcial','Código de chegada para confirmar o início do serviço'],
+    ['parcial','Referência de preço por categoria, sem IA'],
+    ['plan','Pagamento e saque pela plataforma']
+  ].map(t=>'<li>'+statusTag(t[0])+'<span>'+t[1]+'</span></li>').join('')+'</ul>'+
   '</div>'+
   '<div class="auth-main"><div class="auth-card">'+
-  '<h2 class="lp-auth-title">'+(isLogin?'Bem-vindo de volta':'Criar sua conta')+'</h2>'+
+  '<h1 class="lp-auth-title">'+(isLogin?'Bem-vindo de volta':'Criar sua conta')+'</h1>'+
   '<p class="muted lp-auth-sub">'+(isLogin?'Acesse seu painel TaskGO.':'Leva menos de 1 minuto e é grátis.')+'</p>'+
-  '<div class="tabs"><button class="'+(isLogin?'active':'')+'" onclick="A.mode=\'login\';render()">Entrar</button>'+
-  '<button class="'+(!isLogin?'active':'')+'" onclick="A.mode=\'signup\';render()">Criar conta</button></div>'+
+  '<div class="tabs"><button data-fk="aba-entrar" aria-pressed="'+isLogin+'" class="'+(isLogin?'active':'')+'" onclick="A.mode=\'login\';render()">Entrar</button>'+
+  '<button data-fk="aba-criar" aria-pressed="'+!isLogin+'" class="'+(!isLogin?'active':'')+'" onclick="A.mode=\'signup\';render()">Criar conta</button></div>'+
+  (!isLogin?'<p class="lp-auth-notice" role="note">A TaskGO ainda está em desenvolvimento. Sua conta serve para conhecer e testar a plataforma: ainda não há pedidos reais nem pagamentos.</p>':'')+
   '<form onsubmit="doAuth(event)">'+
-  (!isLogin?'<div class="role-pick">'+
-    '<div class="role-opt '+(A.role==='cliente'?'sel':'')+'" onclick="A.role=\'cliente\';render()">'+ic('user')+'<b>Quero contratar</b><span>Sou cliente</span></div>'+
-    '<div class="role-opt '+(A.role==='profissional'?'sel':'')+'" onclick="A.role=\'profissional\';render()">'+ic('wrench')+'<b>Quero trabalhar</b><span>Sou profissional</span></div>'+
+  (!isLogin?'<div class="role-pick" role="group" aria-label="Como você quer usar a TaskGO">'+
+    '<button type="button" data-fk="papel-cliente" aria-pressed="'+(A.role==='cliente')+'" class="role-opt '+(A.role==='cliente'?'sel':'')+'" onclick="A.role=\'cliente\';render()">'+ic('user')+'<b>Quero contratar</b><span>Sou cliente</span></button>'+
+    '<button type="button" data-fk="papel-profissional" aria-pressed="'+(A.role==='profissional')+'" class="role-opt '+(A.role==='profissional'?'sel':'')+'" onclick="A.role=\'profissional\';render()">'+ic('wrench')+'<b>Quero trabalhar</b><span>Sou profissional</span></button>'+
   '</div>'+
-  '<div class="field"><label>Nome completo</label><input class="input" name="name" required placeholder="Como no seu documento"></div>'+
-  '<div class="field"><label>CPF</label><input class="input" name="cpf" required placeholder="000.000.000-00" oninput="this.value=maskCPF(this.value)"></div>'+
-  '<div class="field"><label>Telefone / WhatsApp</label><input class="input" name="phone" required placeholder="(81) 90000-0000" oninput="this.value=maskPhone(this.value)"></div>'+
-  (A.role==='profissional'?'<div class="field"><label>Categoria principal</label><select class="select" name="service">'+SERVICES.map(s=>'<option value="'+s.id+'">'+s.n+'</option>').join('')+'</select></div>':'')
+  '<div class="field"><label for="auth-name">Nome completo</label><input class="input" id="auth-name" name="name" autocomplete="name" required placeholder="Como no seu documento"></div>'+
+  '<div class="field"><label for="auth-cpf">CPF</label><input class="input" id="auth-cpf" name="cpf" inputmode="numeric" required placeholder="000.000.000-00" oninput="this.value=maskCPF(this.value)"></div>'+
+  '<div class="field"><label for="auth-phone">Telefone / WhatsApp</label><input class="input" id="auth-phone" name="phone" type="tel" autocomplete="tel" required placeholder="(81) 90000-0000" oninput="this.value=maskPhone(this.value)"></div>'+
+  (A.role==='profissional'?'<div class="field"><label for="auth-service">Categoria principal</label><select class="select" id="auth-service" name="service">'+SERVICES.map(s=>'<option value="'+s.id+'">'+s.n+'</option>').join('')+'</select></div>':'')
   :'')+
-  '<div class="field"><label>E-mail</label><input class="input" type="email" name="email" required placeholder="voce@email.com"></div>'+
+  '<div class="field"><label for="auth-email">E-mail</label><input class="input" id="auth-email" type="email" name="email" autocomplete="email" required placeholder="voce@email.com"></div>'+
   '<div class="field"><label for="auth-pass">Senha</label><div class="password-field"><input class="input" id="auth-pass" type="password" name="pass" required minlength="6" placeholder="Mínimo 6 caracteres"><button class="password-toggle" type="button" aria-label="Mostrar senha" aria-pressed="false" onclick="alternarVisibilidadeSenha(this)">'+ic('eye')+'</button></div></div>'+
   (isLogin?'<div class="lp-auth-row"><label class="muted lp-auth-check"><input type="checkbox" checked> Lembrar de mim</label><a href="#/recuperar" class="lp-auth-link">Esqueci a senha</a></div>'
   :'<label class="muted lp-auth-check lp-auth-terms"><input type="checkbox" required> Li e aceito os <a href="#/legal/termos" class="lp-auth-link">Termos de Uso</a> e a <a href="#/legal/privacidade" class="lp-auth-link">Política de Privacidade</a>.</label>')+
   '<button class="btn btn-grad btn-block btn-lg">'+(isLogin?'Entrar':'Criar conta')+'</button></form>'+
-  '<div class="lp-auth-or">ou continue com</div>'+
-  '<div class="lp-auth-social">'+
-  '<button id="btn-google" type="button" class="btn btn-ghost"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11c-.5 2.5-1.9 4.6-4 6l6.4 5c3.7-3.4 6.2-8.5 6.2-14.7z"/><path fill="#34A853" d="M24 44c5.5 0 10.1-1.8 13.4-4.8l-6.4-5c-1.8 1.2-4.1 2-7 2-5.4 0-10-3.7-11.6-8.7l-6.6 5.1C9.1 39.4 16 44 24 44z"/><path fill="#FBBC05" d="M12.4 27.5a12 12 0 0 1 0-7l-6.6-5.1a20 20 0 0 0 0 17.2z"/><path fill="#EA4335" d="M24 12c3 0 5.7 1 7.8 3l5.8-5.8C34.1 5.8 29.5 4 24 4 16 4 9.1 8.6 5.8 15.4l6.6 5.1C14 15.7 18.6 12 24 12z"/></svg>Google</button>'+
-  '<button id="btn-apple" type="button" class="btn btn-ghost"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M18.7 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53-1.71-2.47-3.02-6.99-1.26-10.04.87-1.52 2.43-2.49 4.12-2.51 1.29-.02 2.5.87 3.29.87.78 0 2.26-1.08 3.81-.92.65.03 2.48.26 3.65 1.97-.09.06-2.18 1.28-2.16 3.81.03 3.02 2.65 4.03 2.68 4.04-.02.07-.42 1.44-1.38 2.81zM13.98 3.45c.7-.84 1.87-1.48 2.87-1.45.13 1.17-.34 2.35-1.02 3.2-.69.86-1.83 1.52-2.95 1.43-.15-1.14.41-2.34 1.1-3.18z"/></svg>Apple</button></div>'+
   '</div></div></div>';
 }
 function alternarVisibilidadeSenha(botao){
@@ -51,14 +48,6 @@ function alternarVisibilidadeSenha(botao){
   botao.setAttribute('aria-label',mostrar?'Ocultar senha':'Mostrar senha');
   botao.innerHTML=ic(mostrar?'eyeOff':'eye');
 }
-document.addEventListener('click',e=>{
-  const botao=e.target.closest('#btn-google, #btn-apple');
-  if(!botao)return;
-  e.preventDefault();
-  toast(botao.id==='btn-apple'
-    ?'Login com Apple ainda não está disponível nesta versão.'
-    :'Login com Google ainda não está disponível nesta versão.');
-});
 async function obterCabecalhosCsrf(){
   const response=await fetch(API_BASE_URL+'/api/auth/csrf',{credentials:'include'});
   if(!response.ok)throw new Error('Não foi possível iniciar uma solicitação segura.');
@@ -68,7 +57,7 @@ async function obterCabecalhosCsrf(){
 }
 function pageRecuperar(){
   const token=route.q.token||'';
-  return '<div class="auth-wrap"><div class="auth-side"><a href="#/home" class="logo"><span class="lt">Task<b>GO</b></span></a><h2>Recupere o acesso à sua conta</h2><p class="muted">Os links são individuais, temporários e podem ser usados uma única vez.</p></div><div class="auth-main"><div class="auth-card"><h2 class="lp-auth-title">'+(token?'Criar nova senha':'Esqueceu sua senha?')+'</h2><p class="muted lp-auth-sub">'+(token?'Escolha uma nova senha para sua conta.':'Informe o e-mail cadastrado. Se a conta existir e o envio estiver configurado, enviaremos instruções.')+'</p>'+
+  return '<div class="auth-wrap"><div class="auth-side"><a href="#/home" class="logo"><span class="lt">Task<b>GO</b></span></a><p class="lp-auth-slogan">Recupere o acesso à sua conta</p><p class="muted">Os links são individuais, temporários e podem ser usados uma única vez.</p></div><div class="auth-main"><div class="auth-card"><h1 class="lp-auth-title">'+(token?'Criar nova senha':'Esqueceu sua senha?')+'</h1><p class="muted lp-auth-sub">'+(token?'Escolha uma nova senha para sua conta.':'Informe o e-mail cadastrado. Se a conta existir e o envio estiver configurado, enviaremos instruções.')+'</p>'+
   (token?'<form onsubmit="redefinirSenha(event)"><div class="field"><label for="nova-senha">Nova senha</label><input class="input" id="nova-senha" name="novaSenha" type="password" required minlength="8" maxlength="128" autocomplete="new-password"></div><div class="field"><label for="confirmar-senha">Confirme a nova senha</label><input class="input" id="confirmar-senha" name="confirmarSenha" type="password" required minlength="8" maxlength="128" autocomplete="new-password"></div><button class="btn btn-grad btn-block" type="submit">Redefinir senha</button></form>'
   :'<form onsubmit="solicitarRecuperacao(event)"><div class="field"><label for="email-recuperacao">E-mail</label><input class="input" id="email-recuperacao" name="email" type="email" maxlength="254" required autocomplete="email" placeholder="voce@email.com"></div><button class="btn btn-grad btn-block" type="submit">Enviar instruções</button></form>')+
   '<p id="recovery-status" role="status" aria-live="polite" class="muted lp-auth-status"></p><a href="#/entrar" class="btn btn-ghost btn-block">Voltar para entrar</a></div></div></div>';

@@ -3,11 +3,18 @@
    ========================================================= */
 let opsTimer=null;
 let chatPollTimer=null;
+const PAGE_TITLES={servicos:'Serviços',['como-funciona']:'Como funciona',profissionais:'Para profissionais',sobre:'Quem somos',planos:'Planos',entrar:'Entrar ou criar conta',recuperar:'Recuperar acesso',painel:'Painel',seguranca:'Segurança',ajuda:'Central de ajuda',contato:'Contato',legal:'Termos e políticas',contratar:'Contratar serviço'};
+function atualizarTituloAba(p){
+  const detalhe=p==='servicos'&&route.sub?svc(route.sub)?.n:'';
+  const nome=detalhe||PAGE_TITLES[p];
+  document.title=nome?nome+' · TaskGO':'TaskGO · Conectando clientes e profissionais';
+}
 function render(){
   if(trackTimer){clearInterval(trackTimer);trackTimer=null;}
   if(opsTimer){clearInterval(opsTimer);opsTimer=null;}
   if(chatPollTimer){clearInterval(chatPollTimer);chatPollTimer=null;}
   const p=route.page;
+  const focoAnterior=document.activeElement?.dataset?.fk;
   if(p!=='contratar')W.presetService='';
   document.body.classList.toggle('lp',!['painel','seguranca','ajuda','contato','legal','contratar'].includes(p));
   let body='',full=false;
@@ -25,14 +32,13 @@ function render(){
   else if(p==='legal')body=pageLegal();
   else if(p==='contratar')body=pageContratar();
   else body=pageHome();
-  document.getElementById('root').innerHTML=header()+body+(full?'':footer().replace(/Pagamento protegido[^<]*/, 'Pagamentos indisponíveis neste ambiente'))+
-    (p==='painel'||p==='entrar'?'':'<button class="fab-help" onclick="abrirChatSuporte()" title="Ajuda">'+ic('chat')+'</button>');
-  if(!DEMO_MODE&&p==='home'){
-    const root=document.getElementById('root');
-    root.querySelector('.trust')?.setAttribute('aria-label','Estágio atual do projeto');
-  }
+  const conteudo=p==='painel'?body:'<a class="skip-link" href="#conteudo" onclick="event.preventDefault();document.getElementById(\'conteudo\').focus()">Pular para o conteúdo</a>'+header()+'<main id="conteudo" tabindex="-1">'+body+'</main>';
+  document.getElementById('root').innerHTML=conteudo+(full?'':footer())+
+    (p==='painel'||p==='entrar'?'':'<button class="fab-help" onclick="abrirChatSuporte()" title="Ajuda" aria-label="Ajuda">'+ic('chat')+'</button>');
   if(DEMO_MODE){const aviso=document.createElement('div');aviso.className='card';aviso.setAttribute('role','status');aviso.style.cssText='max-width:1180px;margin:10px auto;padding:10px 16px;border-color:var(--danger);color:var(--danger);font-size:.85rem';aviso.textContent='Modo demonstração: contas, profissionais, pedidos e avaliações exibidos são fictícios.';document.getElementById('root').prepend(aviso);}
   enhanceInteractiveButtons(document.getElementById('root'));
+  atualizarTituloAba(p);
+  if(focoAnterior)document.querySelector('[data-fk="'+focoAnterior+'"]')?.focus();
   /* pós-render */
   if(p==='profissionais')simular();
   if(p==='painel'){
@@ -72,6 +78,6 @@ function render(){
   }
 }
 function abrirChatSuporte(){
-  openModal('<div class="modal-head"><div><h3>Suporte TaskGO</h3><p>O chat de suporte nao esta conectado nesta versao.</p></div><button class="icon-btn" onclick="closeModal()">'+ic('x')+'</button></div><p class="muted">Use o formulario para registrar uma solicitacao. A mensagem sera salva no TaskGo, mas o encaminhamento por e-mail ainda nao esta configurado.</p><a class="btn btn-primary btn-block" href="#/contato" onclick="closeModal()">Abrir formulario de contato</a>');
+  openModal('<div class="modal-head"><div><h3>Suporte TaskGO</h3><p>O chat de suporte ainda não está conectado.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div><p class="muted">Use o formulário para registrar sua solicitação. A mensagem fica salva na TaskGO, mas ainda não é encaminhada por e-mail.</p><a class="btn btn-primary btn-block" href="#/contato" onclick="closeModal()">Abrir formulário de contato</a>');
 }
 

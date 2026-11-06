@@ -127,7 +127,7 @@ async function iniciarCompartilhamentoGPS(id){
   const o=S.orders.find(item=>item.id===id);
   if(!o||o.status!=='a_caminho'||me().role!=='profissional')return toast('O rastreamento não está autorizado para este pedido.','err');
   if(!navigator.geolocation)return toast('Este dispositivo não oferece geolocalização. Nenhuma posição foi enviada.','err');
-  openModal('<div class="modal-head"><div><h3>Compartilhar localização</h3><p>Enquanto este pedido estiver a caminho, sua posição e precisão serão enviadas ao cliente deste pedido.</p></div><button class="icon-btn" onclick="closeModal()">'+ic('x')+'</button></div><p class="muted" style="margin:12px 0">O compartilhamento para ao informar chegada, cancelar o pedido ou fechar esta página. A localização pode ser aproximada e depende do dispositivo.</p><button class="btn btn-grad btn-block" onclick="confirmarCompartilhamentoGPS(\''+id+'\')">Concordo e iniciar GPS</button>');
+  openModal('<div class="modal-head"><div><h3>Compartilhar localização</h3><p>Enquanto este pedido estiver a caminho, sua posição e precisão serão enviadas ao cliente deste pedido.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div><p class="muted" style="margin:12px 0">O compartilhamento para ao informar chegada, cancelar o pedido ou fechar esta página. A localização pode ser aproximada e depende do dispositivo.</p><button class="btn btn-grad btn-block" onclick="confirmarCompartilhamentoGPS(\''+id+'\')">Concordo e iniciar GPS</button>');
 }
 function confirmarCompartilhamentoGPS(id){
   closeModal();pararCompartilhamentoGPS();gpsWatchOrder=id;gpsStatus('Solicitando permissão de localização ao dispositivo…');
@@ -183,7 +183,7 @@ async function pararCompartilhamentoPedido(id){
 window.addEventListener('hashchange',()=>{if(!location.hash.includes('/painel/pedido/'))pararCompartilhamentoGPS();});
 window.addEventListener('beforeunload',pararCompartilhamentoGPS);
 function abrirValidacao(id){
-  openModal('<div class="modal-head"><div><h3>Validar chegada</h3><p>Digite o código de 4 dígitos para iniciar o serviço.</p></div><button class="icon-btn" onclick="closeModal()">'+ic('x')+'</button></div>'+
+  openModal('<div class="modal-head"><div><h3>Validar chegada</h3><p>Digite o código de 4 dígitos para iniciar o serviço.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
   '<div class="code-boxes">'+[0,1,2,3].map(i=>'<input id="cb'+i+'" inputmode="numeric" maxlength="1" oninput="cbNext('+i+')">').join('')+'</div>'+
   '<p class="hint center" style="margin-bottom:16px">Nunca compartilhe o código antes do profissional chegar.</p>'+
   '<button class="btn btn-grad btn-block" onclick="validarCodigo(\''+id+'\')">Confirmar</button>',
@@ -228,7 +228,7 @@ function abrirAvaliacao(id){
   const reviewPlaceholder=isPro
     ? 'Como foi a comunica\u00e7\u00e3o e o atendimento do cliente?'
     : 'Conte como foi o servi\u00e7o...';
-  openModal('<div class="modal-head"><div><h3>'+reviewTitle+'</h3><p>'+reviewSubtitle+'</p></div><button class="icon-btn" onclick="closeModal()">'+ic('x')+'</button></div>'+
+  openModal('<div class="modal-head"><div><h3>'+reviewTitle+'</h3><p>'+reviewSubtitle+'</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
   '<div id="rstars" role="group" aria-label="Escolha uma nota de 1 a 5 estrelas" style="display:flex;gap:8px;justify-content:center;margin:10px 0 20px">'+
   [1,2,3,4,5].map(i=>'<button type="button" aria-label="Avaliar com '+i+' '+(i===1?'estrela':'estrelas')+'" aria-pressed="'+(i===1?'true':'false')+'" onclick="setRating('+i+')" style="background:none;border:0;cursor:pointer;padding:0"><svg viewBox="0 0 24 24" style="width:38px;height:38px;fill:var(--warn);opacity:'+(i<=ratingVal?1:.25)+';transition:opacity .15s,transform .15s" data-s="'+i+'">'+I.star+'</svg></button>').join('')+'</div>'+ 
   '<div class="field"><label>Coment\u00e1rio (opcional)</label><textarea class="textarea" id="rcom" placeholder="'+reviewPlaceholder+'"></textarea></div>'+
@@ -257,7 +257,7 @@ async function salvarAvaliacao(id){
   }catch(error){toast(error.message||'Não foi possível salvar a avaliação.','err');}
 }
 function cancelarPedido(id){
-  openModal('<div class="modal-head"><div><h3>Cancelar pedido</h3><p>Essa ação não pode ser desfeita.</p></div><button class="icon-btn" onclick="closeModal()">'+ic('x')+'</button></div>'+
+  openModal('<div class="modal-head"><div><h3>Cancelar pedido</h3><p>Essa ação não pode ser desfeita.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
   '<div class="field"><label>Motivo do cancelamento</label><select class="select" id="cmot"><option>Resolvi o problema sozinho</option><option>Encontrei outro profissional</option><option>O valor ficou acima do esperado</option><option>Demora no atendimento</option><option>Outro motivo</option></select></div>'+
   '<div style="padding:13px;border-radius:12px;background:color-mix(in srgb,var(--warn) 12%,transparent);font-size:.85rem;margin-bottom:18px">Cancelamentos após o início do deslocamento podem gerar taxa de compensação ao profissional.</div>'+
   '<div style="display:flex;gap:10px"><button class="btn btn-ghost btn-block" onclick="closeModal()">Voltar</button>'+
@@ -269,7 +269,7 @@ async function confirmarCancel(id){
   catch(error){toast(error.message||'O servidor não confirmou o cancelamento.','err');}
 }
 function compartilharRota(){
-  openModal('<div class="modal-head"><div><h3>Compartilhar acompanhamento</h3><p>Envie o link do rastreio para alguém de confiança.</p></div><button class="icon-btn" onclick="closeModal()">'+ic('x')+'</button></div>'+
+  openModal('<div class="modal-head"><div><h3>Compartilhar acompanhamento</h3><p>Envie o link do rastreio para alguém de confiança.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
   '<div class="copy-box" id="shareLink">https://taskgo.com.br/track/'+uid().toUpperCase()+'</div>'+
   '<button class="btn btn-soft btn-block" style="margin-top:14px" onclick="copiar(document.getElementById(\'shareLink\').textContent)">'+ic('copy')+' Copiar link</button>'+
   '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">'+
@@ -277,7 +277,7 @@ function compartilharRota(){
   '<button class="btn btn-ghost" onclick="toast(\'Abrindo SMS...\')">SMS</button></div>');
 }
 function emergencia(){
-  openModal('<div class="modal-head"><div><h3 style="color:var(--danger)">Acionar emergência</h3><p>Nosso time de segurança será notificado imediatamente.</p></div><button class="icon-btn" onclick="closeModal()">'+ic('x')+'</button></div>'+
+  openModal('<div class="modal-head"><div><h3 style="color:var(--danger)">Acionar emergência</h3><p>Nosso time de segurança será notificado imediatamente.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
   '<div style="display:flex;flex-direction:column;gap:10px">'+
   '<button class="btn btn-danger btn-block" onclick="closeModal();toast(\'Time de segurança acionado. Aguarde o contato.\',\'ok\')">'+ic('flag')+' Falar com segurança TaskGO</button>'+
   '<button class="btn btn-ghost btn-block" onclick="closeModal();toast(\'Ligando para 190...\')">'+ic('phone')+' Ligar para a Polícia (190)</button>'+

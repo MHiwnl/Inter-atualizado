@@ -10,6 +10,8 @@
   --grad:linear-gradient(135deg,#2f8bff,#5aa7ff 55%,#8b5cf6);
   --map-land:#ffffff; --map-bldg:#edf1f6; --map-road:#ffffff; --map-road-casing:#d8e0ea;
   --map-water:#d8edf8; --map-park:#dcebd9; --map-label:#586a82;
+  /* Papéis, sem cor nova: texto sobre o azul da marca e anel de foco. */
+  --on-brand:var(--bg); --focus:var(--brand-2);
   --maxw:1220px;
   --hdr:72px;
 }
@@ -17,6 +19,7 @@
   --bg:#f5f7fb; --bg-soft:#eef2f8; --surface:#ffffff; --surface-2:#f6f8fc; --surface-3:#eef2f8;
   --line:rgba(12,22,40,.10); --line-strong:rgba(12,22,40,.18);
   --text:#0b1220; --text-2:#3c4a63; --muted:#697a95;
+  --on-brand:var(--text); --focus:var(--brand-ink);
   --shadow:0 18px 50px -24px rgba(16,32,64,.35);
   --map-land:#ffffff; --map-bldg:#edf1f6; --map-road:#ffffff; --map-road-casing:#d8e0ea;
   --map-water:#d8edf8; --map-park:#dcebd9; --map-label:#586a82;
@@ -26,6 +29,7 @@
     --bg:#f5f7fb; --bg-soft:#eef2f8; --surface:#ffffff; --surface-2:#f6f8fc; --surface-3:#eef2f8;
     --line:rgba(12,22,40,.10); --line-strong:rgba(12,22,40,.18);
     --text:#0b1220; --text-2:#3c4a63; --muted:#697a95;
+    --on-brand:var(--text); --focus:var(--brand-ink);
     --shadow:0 18px 50px -24px rgba(16,32,64,.35);
   }
 }
@@ -46,6 +50,15 @@ h2{font-size:clamp(1.6rem,3.4vw,2.6rem)}
 h3{font-size:clamp(1.1rem,2vw,1.4rem)}
 p{margin:0}
 ::selection{background:rgba(47,139,255,.35)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+main:focus{outline:none}
+.skip-link{position:fixed;top:8px;left:8px;z-index:100;padding:10px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--line-strong);color:var(--text);font-weight:600;transform:translateY(calc(-100% - 16px))}
+.skip-link:focus{transform:none}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .card-hover,.icon-btn,.btn,.faq-a,.faq-q svg{transition:none}
+  .card-hover:hover,.icon-btn:hover,.btn:hover{transform:none}
+}
 .wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 22px}
 .section{padding:clamp(56px,8vw,104px) 0}
 .muted{color:var(--muted)}

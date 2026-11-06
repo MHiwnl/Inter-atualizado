@@ -17,7 +17,6 @@
   .nav-links{display:none}
   .burger{display:grid}
   .split{grid-template-columns:1fr}
-  .searchbox{grid-template-columns:1fr}
   .g3,.g2{grid-template-columns:1fr!important}
   .mobile-nav.open{display:block;position:fixed;inset:var(--hdr) 0 0;background:var(--bg);z-index:55;padding:24px;overflow-y:auto}
   .mobile-nav a{display:block;padding:15px;border-bottom:1px solid var(--line);font-weight:700;font-size:1.05rem}
@@ -31,6 +30,4 @@
   .foot-grid{grid-template-columns:1fr}
   .code-boxes input{width:48px;height:58px;font-size:1.4rem}
   .hero-cta .btn{width:100%}
-  .trust{gap:16px}
-  .trust div{min-width:44%}
 }

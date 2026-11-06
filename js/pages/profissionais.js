@@ -2,34 +2,35 @@
 function pageProfissionais(){
   const firstService=SERVICES[0],initialServicesPerWeek=10,initialTicket=Math.max(firstService.min,Math.min(firstService.max,225));
   const simulador=DEMO_MODE
-    ?'<div class="card"><h3>Simulador demonstrativo</h3><p class="muted lp-sim-note">Valores fictícios de demonstração; não representam tarifa, pedidos ou ganhos reais.</p>'+ 
+    ?'<div class="card"><h2 class="lp-card-title">Simulador demonstrativo</h2><p class="muted lp-sim-note">Valores fictícios de demonstração; não representam tarifa, pedidos ou ganhos reais.</p>'+ 
       '<div class="field"><label for="simSvc">Categoria principal</label><select class="select" id="simSvc" onchange="simular()">'+SERVICES.map(s=>'<option value="'+s.id+'">'+s.n+'</option>').join('')+'</select></div>'+ 
       '<div class="field"><label for="simQtd">Serviços por semana: <b id="simQtdL">'+initialServicesPerWeek+'</b></label><input class="sim-range" type="range" id="simQtd" min="1" max="30" value="'+initialServicesPerWeek+'" oninput="simular()" aria-label="Quantidade de serviços por semana"></div>'+ 
-      '<div class="field"><label for="simTk">Ticket demonstrativo por serviço: <b id="simTkL"></b></label><input class="sim-range" type="range" id="simTk" data-service-id="'+firstService.id+'" min="'+firstService.min+'" max="'+firstService.max+'" step="5" value="'+initialTicket+'" oninput="simular()" aria-label="Ticket fictício por serviço"><small class="sim-help" id="simTicketHint"></small></div>'+ 
+      '<div class="field"><label for="simTk">Valor médio por serviço (fictício): <b id="simTkL"></b></label><input class="sim-range" type="range" id="simTk" data-service-id="'+firstService.id+'" min="'+firstService.min+'" max="'+firstService.max+'" step="5" value="'+initialTicket+'" oninput="simular()" aria-label="Valor médio fictício por serviço"><small class="sim-help" id="simTicketHint"></small></div>'+ 
       '<div id="simOut"></div></div>'
-    :'<div class="card"><h3>Estimativa indisponível</h3><p class="muted">O TaskGO ainda não tem tarifas, volume de pedidos ou pagamentos persistidos para calcular ganhos.</p></div>';
+    :'<div class="card"><h2 class="lp-card-title">Ainda não dá para estimar ganhos</h2><p class="muted">Sem pedidos e sem taxas definidas, não é possível calcular quanto você ganharia. A estimativa aparece quando houver dados reais.</p>'+
+      '<h3 class="lp-next-title">O que você pode fazer agora</h3><ul class="lp-next">'+[['#/entrar?tipo=profissional','Criar sua conta de profissional'],['#/como-funciona','Ver o que já funciona'],['#/contato','Contar como você trabalha']].map(l=>'<li><a href="'+l[0]+'">'+l[1]+ic('arrow')+'</a></li>').join('')+'</ul></div>';
   return '<section class="section"><div class="wrap"><div class="split lp-panel">'+
   '<div class="lp-copy"><span class="eyebrow">'+ic('award')+' Para profissionais</span>'+
-  '<h2>Transforme sua habilidade em renda recorrente</h2>'+
-  '<p class="t2">Cadastre-se grátis, receba pedidos na sua região e seja pago via PIX. Sem mensalidade, sem exclusividade, você define a agenda.</p>'+
-  '<ul class="list-check">'+[
-    'Zero mensalidade no plano gratuito — pague só uma taxa por serviço concluído',
-    'Carteira e saques ainda indisponíveis nesta versão',
-    'Complete seu perfil para apresentar sua experiencia aos clientes',
-    'Você aceita apenas os pedidos que fizerem sentido para você',
-    'Suporte humano e mediação em caso de conflitos'
-  ].map(t=>'<li>'+ic('checkCircle')+'<span>'+t+'</span></li>').join('')+'</ul>'+
+  '<h1 class="lp-page-title">Ajude a construir uma plataforma feita para profissionais autônomos</h1>'+
+  '<p class="t2">A TaskGO está em desenvolvimento, e ainda não há pedidos de clientes. Você já pode criar sua conta, conhecer o painel e nos ajudar a definir como a plataforma vai funcionar.</p>'+
+  '<ul class="lp-status-list">'+[
+    ['ok','Cadastro gratuito'],
+    ['parcial','Você escolhe os pedidos que aceita, e o endereço do cliente só aparece depois do aceite'],
+    ['plan','Taxas e planos ainda em definição'],
+    ['plan','Recebimento e saque pela plataforma'],
+    ['plan','Suporte e mediação em caso de conflito']
+  ].map(t=>'<li>'+statusTag(t[0])+'<span>'+t[1]+'</span></li>').join('')+'</ul>'+
   '<div class="lp-actions lp-actions-start"><a class="btn btn-grad btn-lg" href="#/entrar?tipo=profissional">Criar conta de profissional '+ic('arrow')+'</a></div></div>'+
   simulador+
   '</div>'+
   '<div class="grid g3 lp-after-panel">'+
-  [['bell','Pedidos no seu bolso','Notificação instantânea dos pedidos compatíveis com seu perfil e raio de atendimento.'],
-   ['wallet','Carteira transparente','Veja o que entrou, o que está retido e o que já pode ser sacado — tudo em tempo real.'],
-   ['star','Reputação que vale','Cada avaliação positiva melhora seu posicionamento nas buscas da plataforma.'],
-   ['cal','Agenda sob controle','Bloqueie horários, defina dias de folga e organize seus atendimentos.'],
-   ['shield','Proteção nos atendimentos','Código de chegada, registro de rota e suporte de emergência durante o serviço.'],
-   ['trendUp','Painel de desempenho','Acompanhe taxa de aceite, conversão, faturamento e avaliação média.']
-  ].map(f=>'<div class="card card-hover lp-feature"><div class="ico-box">'+ic(f[0])+'</div><h3>'+f[1]+'</h3><p>'+f[2]+'</p></div>').join('')+'</div>'+
+  [['bell','Pedidos no painel','Os pedidos da sua categoria aparecem no painel, com aviso dentro do app. Avisos por e-mail, push ou SMS ainda não existem.','parcial'],
+   ['wallet','Carteira','Saldo, extrato e saque estão em desenvolvimento. Hoje a carteira não recebe dinheiro real.','plan'],
+   ['star','Avaliações','Os clientes avaliam cada atendimento concluído. Usar a nota para ordenar as buscas ainda está planejado.','parcial'],
+   ['cal','Agenda','Bloquear horários e organizar a semana ainda está em desenvolvimento.','plan'],
+   ['shield','Código de chegada','O cliente confirma um código de 4 dígitos para iniciar o serviço. Registro de rota e suporte de emergência ainda não existem.','parcial'],
+   ['trendUp','Desempenho','Indicadores de aceite e faturamento ainda estão em desenvolvimento.','plan']
+  ].map(f=>'<div class="card card-hover lp-feature"><div class="lp-feature-top"><div class="ico-box">'+ic(f[0])+'</div>'+statusTag(f[3])+'</div><h2 class="lp-card-title">'+f[1]+'</h2><p>'+f[2]+'</p></div>').join('')+'</div>'+
   '</div></section>';
 }
 function simular(){
@@ -55,7 +56,7 @@ function simular(){
   const low=servicesPerMonth*min*(1-feeRate),high=servicesPerMonth*max*(1-feeRate);
   output.innerHTML='<div class="sim-results">'+
     '<div class="sim-result-highlight"><span>Líquido estimado/mês</span><b>'+money(liq)+'</b></div>'+
-    '<p class="sim-result-context">Com cerca de '+Math.round(servicesPerMonth)+' serviços de '+service.n+' por mês e ticket médio de '+money(t)+'.</p>'+
+    '<p class="sim-result-context">Com cerca de '+Math.round(servicesPerMonth)+' serviços de '+service.n+' por mês e valor médio de '+money(t)+'.</p>'+
     '<div class="sim-result-row"><span>Faturamento bruto</span><b>'+money(bruto)+'</b></div>'+
     '<div class="sim-result-row"><span>Taxa TaskGO (12%)</span><b class="sim-fee">- '+money(taxa)+'</b></div>'+
     '<div class="sim-result-range">Faixa de referência líquida, com o mesmo volume: <b>'+money(low)+' a '+money(high)+'</b>.</div></div>'+

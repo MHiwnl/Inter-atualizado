@@ -7,7 +7,7 @@ function confirmarSaque(){toast('Saques desativados: nenhum saldo financeiro dis
 function executarSaque(){toast('Saques desativados: nenhum saldo financeiro disponivel.','err');}
 function editarChavePix(){
   const u=me();
-  openModal('<div class="modal-head"><div><h3>Chave PIX</h3><p>Use CPF, e-mail, telefone ou chave aleatória.</p></div><button class="icon-btn" onclick="closeModal()">'+ic('x')+'</button></div>'+
+  openModal('<div class="modal-head"><div><h3>Chave PIX</h3><p>Use CPF, e-mail, telefone ou chave aleatória.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
   '<div class="field"><label>Tipo da chave</label><select class="select" id="pkType"><option>CPF</option><option>E-mail</option><option>Telefone</option><option>Chave aleatória</option></select></div>'+
   '<div class="field"><label>Chave</label><input class="input" id="pkVal" value="'+esc(u.pixKey||'')+'"></div>'+
   '<button class="btn btn-grad btn-block" onclick="salvarChavePix()">Salvar chave</button>');

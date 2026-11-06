@@ -119,7 +119,7 @@ function wStep5(){
 /* Real checkout is unavailable until a payment provider is configured. */
 function abrirCheckout(){
   if(!me()){toast('Faca login para continuar.','err');return go('/entrar?next=contratar');}
-  openModal('<div class="modal-head"><div><h3>Pagamentos indisponiveis</h3><p>O checkout esta desativado.</p></div><button class="icon-btn" onclick="closeModal()">'+ic('x')+'</button></div><div class="card"><p class="muted">O TaskGO ainda nao esta conectado a um provedor. Nenhuma cobranca sera criada e nenhum pedido sera marcado como pago.</p></div>');
+  openModal('<div class="modal-head"><div><h3>Pagamentos indisponiveis</h3><p>O checkout esta desativado.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div><div class="card"><p class="muted">O TaskGO ainda nao esta conectado a um provedor. Nenhuma cobranca sera criada e nenhum pedido sera marcado como pago.</p></div>');
 }
 function trocarMetodoCheckout(){toast('Checkout indisponivel.','err');}
 function copiarCodigoCheckout(){toast('Nao ha codigo PIX valido disponivel.','err');}

@@ -53,7 +53,7 @@ function ficarOffline(){
 }
 function ajustarRaio(){
   const u=me();
-  openModal('<div class="modal-head"><div><h3>Raio de atendimento</h3><p>Receba apenas pedidos dentro da distância escolhida.</p></div><button class="icon-btn" onclick="closeModal()">'+ic('x')+'</button></div>'+
+  openModal('<div class="modal-head"><div><h3>Raio de atendimento</h3><p>Receba apenas pedidos dentro da distância escolhida.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
   '<div class="field"><label>Distância máxima: <b id="raioL">'+(u.acceptRadius||10)+' km</b></label>'+
   '<input type="range" min="1" max="50" value="'+(u.acceptRadius||10)+'" style="width:100%" oninput="document.getElementById(\'raioL\').textContent=this.value+\' km\';window.__raio=this.value"></div>'+
   '<button class="btn btn-grad btn-block" onclick="saveUser({acceptRadius:+(window.__raio||'+(u.acceptRadius||10)+')});closeModal();toast(\'Raio atualizado\',\'ok\');render()">Salvar</button>');

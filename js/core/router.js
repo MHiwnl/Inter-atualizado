@@ -9,5 +9,5 @@ function parseHash(){
   return {page:parts[0]||'home',sub:parts[1]||'',id:parts[2]||'',q};
 }
 function go(path){location.hash=path;}
-window.addEventListener('hashchange',()=>{route=parseHash();window.scrollTo({top:0,behavior:'instant'});render();});
+window.addEventListener('hashchange',()=>{route=parseHash();window.scrollTo({top:0,behavior:'instant'});render();document.getElementById('conteudo')?.focus({preventScroll:true});});
 

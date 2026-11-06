@@ -10,7 +10,7 @@ if(paymentsDemoStateCleared)Store.save();
 
 function abrirCheckout(){
   if(!me()){toast('Faça login para continuar.','err');return go('/entrar?next=contratar');}
-  openModal('<div class="modal-head"><div><h3>Pagamentos indisponíveis</h3><p>O checkout está desativado.</p></div><button class="icon-btn" onclick="closeModal()">'+ic('x')+'</button></div>'+ 
+  openModal('<div class="modal-head"><div><h3>Pagamentos indisponíveis</h3><p>O checkout está desativado.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+ 
     '<div class="card"><p class="muted">O TaskGO ainda não está conectado a um provedor de pagamentos. Nenhuma cobrança será criada e nenhum pedido será marcado como pago.</p></div>');
 }
 function confirmarPagamentoMock(evento){if(evento)evento.preventDefault();toast('Pagamento indisponível. Nenhuma cobrança foi enviada.','err');}

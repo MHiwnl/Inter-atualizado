@@ -51,7 +51,7 @@ function dashAgenda(){
    '<a class="btn btn-primary" style="margin-top:16px" href="#/painel/oportunidades">Ver oportunidades</a></div>');
 }
 function bloquearHorario(){
-  openModal('<div class="modal-head"><div><h3>Bloquear horário</h3><p>Nenhum pedido será enviado nesse período.</p></div><button class="icon-btn" onclick="closeModal()">'+ic('x')+'</button></div>'+
+  openModal('<div class="modal-head"><div><h3>Bloquear horário</h3><p>Nenhum pedido será enviado nesse período.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
   '<div class="field"><label>Data</label><input class="input" type="date"></div>'+
   '<div class="grid g2" style="gap:0 14px"><div class="field"><label>Das</label><input class="input" type="time" value="12:00"></div>'+
   '<div class="field"><label>Até</label><input class="input" type="time" value="13:00"></div></div>'+

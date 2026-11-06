@@ -72,7 +72,7 @@ function trocarFoto(input){
 }
 async function toggleNotif(k){const u=me(),next={...(u.notif||{}),[k]:!u.notif?.[k]};try{await saveUser({notif:next});render();}catch(error){toast(error.message||'Não foi possível salvar a preferência.','err');}}
 function trocarSenha(){
-  openModal('<div class="modal-head"><div><h3>Alterar senha</h3><p>Use no mínimo 6 caracteres.</p></div><button class="icon-btn" onclick="closeModal()">'+ic('x')+'</button></div>'+
+  openModal('<div class="modal-head"><div><h3>Alterar senha</h3><p>Use no mínimo 6 caracteres.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
   '<div class="field"><label>Senha atual</label><input class="input" type="password" id="pwOld"></div>'+
   '<div class="field"><label>Nova senha</label><input class="input" type="password" id="pwNew"></div>'+
   '<div class="field"><label>Confirmar nova senha</label><input class="input" type="password" id="pwNew2"></div>'+
@@ -86,7 +86,7 @@ async function salvarSenha(){
   catch(erro){toast(erro.message||'Não foi possível alterar a senha.','err');}
 }
 function excluirConta(){
-  openModal('<div class="modal-head"><div><h3 style="color:var(--danger)">Excluir conta</h3><p>Todos os seus dados, pedidos e saldo serão perdidos.</p></div><button class="icon-btn" onclick="closeModal()">'+ic('x')+'</button></div>'+
+  openModal('<div class="modal-head"><div><h3 style="color:var(--danger)">Excluir conta</h3><p>Todos os seus dados, pedidos e saldo serão perdidos.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
   '<div class="field"><label>Digite <b>EXCLUIR</b> para confirmar</label><input class="input" id="delConf" placeholder="EXCLUIR"></div>'+
   '<div class="field"><label>Senha atual</label><input class="input" id="delPassword" type="password" autocomplete="current-password"></div>'+ 
   '<button class="btn btn-danger btn-block" id="btnConfirmarExclusao" onclick="confirmarExclusao()">Excluir permanentemente</button>');
