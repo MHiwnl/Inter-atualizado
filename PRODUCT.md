@@ -56,7 +56,8 @@ A TaskGO aproxima profissionais autônomos e pessoas que precisam de serviços l
 - **Nome:** TaskGO.
 - **Origem:** projeto criado em 2026 por estudantes da UNIBRA, em Recife.
 - **Valores publicados no site:** transparência, segurança, respeito ao trabalho e escuta ativa.
-- **Cores:** as cores atuais do site são um compromisso definido pelo responsável pelo produto e não devem mudar. Os valores estão em `css/base.css`.
+- **Cores:** o responsável pelo produto decidiu trocar a paleta em um redesign completo (novembro de 2026): preto e um azul intenso próprio da TaskGO. As páginas públicas e o login ficam só no tema escuro; o painel também passa pelo redesign completo, nas visões de cliente e profissional, e mantém o tema claro, para uso na rua. Até o redesign ser aplicado, os valores em uso seguem em `css/base.css`.
+- **Referência visual:** Instituto Futuros (institutofuturos.com.br), como inspiração de características, sem copiar a identidade dele. O site não pode parecer feito por IA.
 - **Idioma:** português do Brasil.
 
 ## Evidence on Hand
