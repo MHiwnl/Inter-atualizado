@@ -42,7 +42,7 @@ input[type=checkbox]{accent-color:var(--brand)}
   margin:auto;padding:40px 32px 32px;border:1px solid var(--tg-border);border-radius:0;
   background:var(--tg-bg);color:var(--tg-text);box-shadow:var(--tg-shadow);text-align:center;font-family:inherit
 }
-:root[data-surface="app"][data-theme="light"] .tg-success{
+:root[data-theme="light"] .tg-success{
   --tg-bg:#fff;--tg-border:rgba(15,23,42,.10);--tg-text:#0f172a;--tg-muted:#5b6578;
   --tg-track:rgba(15,23,42,.08);--tg-ok:#14946b;--tg-ok-soft:rgba(20,148,107,.10);
   --tg-err:#d1434b;--tg-err-soft:rgba(209,67,75,.10);--tg-brand:#2b59ff;--tg-brand-hover:#1a3fd6;

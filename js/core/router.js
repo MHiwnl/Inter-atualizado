@@ -9,5 +9,10 @@ function parseHash(){
   return {page:parts[0]||'home',sub:parts[1]||'',id:parts[2]||'',q};
 }
 function go(path){location.hash=path;}
-window.addEventListener('hashchange',()=>{route=parseHash();window.scrollTo({top:0,behavior:'instant'});render();document.getElementById('conteudo')?.focus({preventScroll:true});});
+window.addEventListener('hashchange',()=>{
+  route=parseHash();
+  const trocar=()=>{window.scrollTo({top:0,behavior:'instant'});render();document.getElementById('conteudo')?.focus({preventScroll:true});};
+  /* Transição curta entre páginas onde o navegador oferece; nos outros, a troca é direta. */
+  if(document.startViewTransition)document.startViewTransition(trocar);else trocar();
+});
 

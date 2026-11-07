@@ -29,6 +29,7 @@ function header(){
     '<a href="#/home" class="logo"><span class="lt">Task<b>GO</b></span></a>'+
     '<div class="nav-links">'+links+'</div>'+
     '<div class="nav-right">'+
+      themeBtn()+
       (u
         ? bellBtn()+
           '<a class="btn btn-ghost btn-sm" href="#/painel">'+avatar(u,22)+' Painel</a>'

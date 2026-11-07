@@ -21,7 +21,7 @@
 .folha-corpo{min-width:0}
 /* ============ INÍCIO ============ */
 .hero{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;min-height:calc(100svh - var(--hdr));padding:clamp(48px,7vw,88px) 0}
-.hero-campo{position:absolute;inset:0 0 0 34%;z-index:-1;overflow:hidden;isolation:isolate;background:linear-gradient(90deg,#000 0,var(--brand) 42%)}
+.hero-campo{position:absolute;inset:0 0 0 34%;z-index:-1;overflow:hidden;isolation:isolate;background:linear-gradient(90deg,var(--bg) 0,var(--brand) 42%)}
 .hero-campo::after{z-index:2;opacity:.75}
 .hero-desenho{position:absolute;right:clamp(16px,5vw,88px);top:50%;width:min(44vw,620px);transform:translateY(-50%);color:#fff}
 .hero-desenho circle,.hero-desenho line,.hero-desenho path{fill:none;stroke:currentColor;stroke-width:1}
@@ -29,16 +29,22 @@
 .hero-desenho .rota{stroke-width:2;stroke-dasharray:780;stroke-dashoffset:780;animation:rota 2.4s .3s cubic-bezier(.16,1,.3,1) forwards}
 .hero-desenho .ponto{fill:#fff;stroke:none}
 @keyframes rota{to{stroke-dashoffset:0}}
+/* Vídeo: mesmas regras da foto; enquadrado para as pessoas ficarem fora da área que desbota. */
+.hero-video{object-position:30% 50%}
+.hero-pausa{display:inline-flex;align-items:center;gap:8px;min-height:32px;padding:4px 10px;border:1px solid var(--line);background:transparent;color:var(--text-2);font-family:var(--font-mono);font-size:.78rem;cursor:pointer}
+.hero-pausa:hover{border-color:var(--text);color:var(--text)}
+.hero-pausa svg{width:13px;height:13px}
 /* Espelhada para o bico do alicate ficar à direita; o cabo se dissolve no preto, em direção ao texto. */
 .hero-foto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:6% 50%;transform:scaleX(-1);mask-image:linear-gradient(270deg,transparent 14%,#000 52%)}
 /* Foto na cor real: o brilho azul fica nas bordas, sem tingir o objeto. */
-.hero-campo:has(.hero-foto){background:#000}
+.hero-campo:has(.hero-foto){background:var(--bg)}
 .hero-campo:has(.hero-foto)::after{opacity:.22}
 .hero-campo:has(.hero-foto)::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;box-shadow:inset 0 0 130px 26px rgba(43,89,255,.72);mask-image:linear-gradient(90deg,transparent 14%,#000 52%)}
 .hero-texto{max-width:620px}
 .hero-texto .duo{font-size:clamp(2rem,3.7vw,3.3rem)}
-.hero-sub{margin-top:24px;max-width:50ch;color:#fff}
-.hero-fase{display:inline-flex;align-items:center;gap:9px;margin-top:34px;font-family:var(--font-mono);font-size:.8rem;color:#fff}
+.hero-sub{margin-top:24px;max-width:50ch;color:var(--text)}
+.hero-rodape{display:flex;flex-wrap:wrap;align-items:center;gap:8px 22px;margin-top:34px}
+.hero-fase{display:inline-flex;align-items:center;gap:9px;margin:0;font-family:var(--font-mono);font-size:.8rem;color:var(--text-2)}
 .hero-fase::before{content:"";width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;background:linear-gradient(90deg,currentColor 50%,transparent 50%)}
 .manifesto{max-width:30em;font-family:var(--font-mono);font-size:clamp(1.25rem,2.3vw,1.95rem);line-height:1.32;letter-spacing:-.02em;font-style:italic;font-weight:300}
 .manifesto strong{font-style:normal;font-weight:700;color:var(--brand)}

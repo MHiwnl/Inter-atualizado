@@ -1,6 +1,6 @@
 /* ============ TOKENS ============
-   Site público e login: sempre escuros (data-surface="site").
-   Painel: escuro ou claro (data-surface="app" + data-theme). */
+   Site público e painel: escuros por padrão, com tema claro pelo botão do cabeçalho (data-theme).
+   data-surface diferencia o site ("site") do painel ("app"). */
 :root,:root[data-surface="site"]{
   --brand:#2b59ff; --brand-2:#8aa3ff; --brand-ink:#1a3fd6; --on-brand:#fff;
   --accent:#35d08f; --warn:#ffb020; --danger:#ff6369;
@@ -18,7 +18,7 @@
   --hdr:72px;
   color-scheme:dark;
 }
-:root[data-surface="app"][data-theme="light"]{
+:root[data-theme="light"]{
   --brand-2:#1a3fd6; --accent-text:#0a7a4b; --warn-text:#8a5a00; --danger-text:#c4262e; --danger:#d9333b; --accent:#10a56a; --warn:#d98a00;
   --bg:#fff; --bg-soft:#f3f3f5; --surface:#fff; --surface-2:#f3f3f5; --surface-3:#e7e7eb;
   --line:rgba(0,0,0,.14); --line-strong:rgba(0,0,0,.42);
@@ -55,5 +55,4 @@ main:focus{outline:none}
 *::-webkit-scrollbar-track{background:transparent}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }

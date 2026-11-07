@@ -78,6 +78,27 @@ async function saveUser(patch){
 
 /* ---------- TEMA ---------- */
 function applyTheme(t){document.documentElement.setAttribute('data-theme',t);}
-applyTheme('dark');
-function toggleTheme(){const cur=document.documentElement.getAttribute('data-theme');applyTheme(cur==='dark'?'light':'dark');render();}
+/* Escuro por padrão; a escolha da pessoa fica guardada neste navegador. */
+const TEMA_SALVO=(()=>{try{return localStorage.getItem('taskgo-tema');}catch(e){return null;}})();
+applyTheme(TEMA_SALVO==='light'?'light':'dark');
+/* Troca de tema: o tema novo se abre em círculo a partir do botão clicado. */
+function toggleTheme(){
+  const raiz=document.documentElement;
+  const proximo=raiz.getAttribute('data-theme')==='dark'?'light':'dark';
+  const trocar=()=>{applyTheme(proximo);try{localStorage.setItem('taskgo-tema',proximo);}catch(e){}render();};
+  if(!document.startViewTransition){trocar();return;}
+  const reduzido=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const botao=document.activeElement?.dataset?.fk==='tema'?document.activeElement:document.querySelector('[data-fk="tema"]');
+  const caixa=botao?.getBoundingClientRect();
+  const x=caixa?caixa.left+caixa.width/2:innerWidth-40,y=caixa?caixa.top+caixa.height/2:40;
+  const raio=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));
+  raiz.classList.add('tema-trocando');
+  const transicao=document.startViewTransition(trocar);
+  transicao.ready.then(()=>{
+    if(reduzido)return;
+    raiz.animate({clipPath:['circle(0px at '+x+'px '+y+'px)','circle('+raio+'px at '+x+'px '+y+'px)']},
+      {duration:720,easing:'cubic-bezier(.65,0,.25,1)',pseudoElement:'::view-transition-new(root)'});
+  }).catch(()=>{});
+  transicao.finished.finally(()=>raiz.classList.remove('tema-trocando'));
+}
 

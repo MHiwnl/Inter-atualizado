@@ -56,14 +56,14 @@ A TaskGO aproxima profissionais autônomos e pessoas que precisam de serviços l
 - **Nome:** TaskGO.
 - **Origem:** projeto criado em 2026 por estudantes da UNIBRA, em Recife.
 - **Valores publicados no site:** transparência, segurança, respeito ao trabalho e escuta ativa.
-- **Cores:** preto e um azul intenso próprio da TaskGO, definidos pelo responsável pelo produto em um redesign completo (novembro de 2026). As páginas públicas e o login ficam só no tema escuro; o painel também passa pelo redesign completo, nas visões de cliente e profissional, e mantém o tema claro, para uso na rua. Os valores estão em `css/base.css`.
+- **Cores:** preto e um azul intenso próprio da TaskGO, definidos pelo responsável pelo produto em um redesign completo (novembro de 2026). O site e o painel são escuros por padrão, com tema claro pelo botão do cabeçalho; o tema claro também serve para o uso na rua. O painel passou pelo mesmo redesign, nas visões de cliente e profissional. Os valores estão em `css/base.css`.
 - **Referência visual:** Instituto Futuros (institutofuturos.com.br), como inspiração de características, sem copiar a identidade dele. O site não pode parecer feito por IA.
 - **Idioma:** português do Brasil.
 
 ## Evidence on Hand
 
 - Dados atuais publicados no site: 0 clientes e 0 profissionais cadastrados.
-- Vídeos em `assets/`, sem uso no site desde o redesign. A imagem principal do topo é gerada por IA (ChatGPT) e mostra só um objeto; o original está em `assets/photos/principal.jpg`.
+- O topo da Início usa o vídeo de banco de imagens `assets/8853466-hd_1920_1080_24fps.mp4` (o nome segue o padrão do Pexels; licença a confirmar), só como fundo, sem legenda: as pessoas no vídeo não representam profissionais da TaskGO. O outro vídeo de `assets/` foi gerado por IA e não é usado. A imagem do alicate, gerada por IA, fica como alternativa em `assets/photos/`.
 - Time fundador listado em `js/pages/sobre.js`, com fotos reais em `assets/photos/`, recortadas de fotos em grupo.
 
 **Não existe e não pode ser inventado:** clientes, profissionais em atividade, depoimentos, logos de parceiros, avaliações reais, métricas de resultado ou imprensa. Pessoas de banco de imagens não podem representar integrantes do time nem profissionais cadastrados.

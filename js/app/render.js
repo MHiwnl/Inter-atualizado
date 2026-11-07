@@ -44,6 +44,7 @@ function render(){
   if(focoAnterior)document.querySelector('[data-fk="'+focoAnterior+'"]')?.focus();
   /* pós-render */
   if(p==='profissionais')simular();
+  if(p==='home')ligarVideoTopo();
   if(p==='painel'){
     iniciarPollingNotificacoes();
     if(me()){

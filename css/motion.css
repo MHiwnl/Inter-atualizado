@@ -1,0 +1,94 @@
+/* ============ MOVIMENTO ============
+   Uma linguagem só: o que entra é "impresso" (recorte que se abre) e o que responde é rápido.
+   Tudo começa visível no HTML; as animações só mudam a forma de chegar.
+   Curva padrão: desaceleração forte, sem quique. */
+:root{--ease-out:cubic-bezier(.16,1,.3,1);--ease-in:cubic-bezier(.7,0,.84,0)}
+
+/* ---------- Retorno de controles (100 a 250ms) ---------- */
+.btn{transition:background-color .16s,color .16s,border-color .16s,transform .1s}
+.btn:active{transform:scale(.98)}
+.icon-btn,.fab-help{transition:border-color .16s,background-color .16s}
+.nav-links a,.cats a,.proximos a,.foot-links a,.faq-q,.lp-auth-link{transition:color .16s}
+.pill,.tabs button,.role-opt,.opt,.dia,.side a,.rowitem,.pro{transition:background-color .14s,border-color .14s,color .14s}
+.input,.select,.textarea{transition:border-color .16s,box-shadow .16s}
+
+/* ---------- Camadas que abrem ---------- */
+.mobile-nav.open{animation:desce .26s var(--ease-out)}
+.modal{animation:sobe .28s var(--ease-out)}
+@keyframes desce{from{opacity:0;transform:translateY(-10px)}}
+@keyframes sobe{from{opacity:0;transform:translateY(16px)}}
+
+/* ---------- Abertura do topo e dos títulos de página ---------- */
+/* Cada linha do título é revelada de baixo para cima, como tipo saindo da prensa. */
+.hero .duo>*,.cabeca .duo>*{animation:imprime .9s var(--ease-out) both}
+.hero .duo>strong,.cabeca .duo>strong{animation-delay:.14s}
+.hero-sub,.cabeca .corpo,.cabeca .aviso-linha{animation:surge .7s .3s var(--ease-out) both}
+.hero .setas{animation:surge .7s .42s var(--ease-out) both}
+.hero-rodape{animation:surge .7s .56s var(--ease-out) both}
+/* A foto assenta devagar; o brilho chega depois dela. */
+.hero-foto{animation:assenta 1.6s var(--ease-out) both}
+.hero-campo:has(.hero-foto)::before{animation:acende 1.2s .5s ease-out both}
+@keyframes imprime{from{clip-path:inset(0 0 100% 0);transform:translateY(.4em)}to{clip-path:inset(-.25em -.25em -.25em -.25em);transform:none}}
+@keyframes surge{from{opacity:0;transform:translateY(12px)}}
+@keyframes assenta{from{opacity:0;scale:1.08}}
+@keyframes acende{from{opacity:0}}
+
+/* ---------- Momento principal: o pedido de exemplo ---------- */
+/* A linha que acabou de ser liberada se abre da esquerda; o endereço sai de baixo de uma tarja. */
+.ticket-linha.nova>span:last-child{position:relative;animation:preenche .5s var(--ease-out) both}
+.ticket-linha.tarja>span:last-child{animation:none}
+.ticket-linha.tarja>span:last-child::after{content:"";position:absolute;inset:-3px -6px;background:var(--brand);transform-origin:right center;animation:recolhe .7s .1s cubic-bezier(.65,0,.25,1) both}
+.ticket-linha.nova .ticket-chave::before{animation:carimba .4s var(--ease-out)}
+@keyframes preenche{from{clip-path:inset(-4px 100% -4px -4px)}to{clip-path:inset(-4px -4px -4px -4px)}}
+@keyframes recolhe{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@keyframes carimba{from{transform:scale(2.2)}}
+
+/* ---------- Ao rolar: as linhas das listas são traçadas ---------- */
+/* Só onde o navegador acompanha a rolagem; nos outros, a página aparece pronta. */
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .cats a,.etapas li,.recurso,.duelo-linha,.tabela-hoje>div,.pessoa,.proximos li,.estado-lista li,.faq-item,.catalogo>div,.lista-legal section,.negativas li{
+      animation:traca linear both;animation-timeline:view();animation-range:entry 5% entry 85%}
+    .folha:not(.cabeca) .duo>*,.zero>*{
+      animation:imprime linear both;animation-timeline:view();animation-range:entry 10% entry 70%}
+  }
+}
+@keyframes traca{from{clip-path:inset(-8px 100% -8px -8px);opacity:.35}to{clip-path:inset(-8px -8px -8px -8px);opacity:1}}
+
+/* ---------- Troca de página ---------- */
+/* O cabeçalho do site e o menu do painel ficam parados; só o conteúdo troca. */
+header.site{view-transition-name:cabecalho}
+.side{view-transition-name:menu-painel}
+/* A página antiga some antes da nova entrar, para as duas não aparecerem sobrepostas. */
+::view-transition-old(root){animation:apaga .09s var(--ease-in) both}
+::view-transition-new(root){animation:entra .36s .07s var(--ease-out) both}
+:root[data-surface="app"]::view-transition-new(root){animation-duration:.2s;animation-delay:.05s}
+@keyframes apaga{to{opacity:0}}
+@keyframes entra{from{opacity:0;transform:translateY(14px)}}
+
+/* ---------- Movimento reduzido ---------- */
+/* Sem deslocamento, recorte ou escala; o que confirma uma ação continua, só como aparecer suave. */
+@keyframes aparece{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){
+  .btn:active{transform:none}
+  .mobile-nav.open,.modal,.hero .duo>*,.cabeca .duo>*,.hero-sub,.cabeca .corpo,.cabeca .aviso-linha,.hero .setas,.hero-rodape,.hero-foto,.ticket-linha.nova>span:last-child{animation-name:aparece;animation-duration:.3s}
+  .hero-foto{scale:1}
+  .ticket-linha.tarja>span:last-child::after{animation:apaga .3s .1s both}
+  .ticket-linha.nova .ticket-chave::before{animation:none}
+  .hero-desenho .rota{animation:none;stroke-dashoffset:0}
+  .seta svg,.seta:hover svg{transition:none;transform:none}
+  ::view-transition-new(root){animation:aparece .15s both}
+  ::view-transition-old(root){animation:apaga .1s both}
+}
+
+/* ---------- Troca de tema ---------- */
+/* O tema novo cobre o antigo em círculo, a partir do botão; o cabeçalho e o menu entram junto. */
+:root.tema-trocando header.site,:root.tema-trocando .side{view-transition-name:none}
+:root.tema-trocando::view-transition-old(root),:root.tema-trocando::view-transition-new(root){animation:none;mix-blend-mode:normal}
+:root.tema-trocando::view-transition-new(root){z-index:2}
+:root.tema-trocando [data-fk="tema"] svg{animation:gira .7s .12s var(--ease-out) both}
+@keyframes gira{from{transform:rotate(-140deg) scale(.3);opacity:0}}
+@media (prefers-reduced-motion:reduce){
+  :root.tema-trocando::view-transition-new(root){animation:aparece .25s both}
+  :root.tema-trocando [data-fk="tema"] svg{animation:aparece .25s both}
+}

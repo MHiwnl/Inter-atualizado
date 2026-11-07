@@ -14,9 +14,38 @@ function desenhoRaio(){
     '<circle class="ponto" cx="300" cy="300" r="7"/><circle class="ponto" cx="64" cy="452" r="7"/>'+
   '</svg>';
 }
+/* Vídeo do topo: tem prioridade sobre a foto. Só fundo, sem legenda: as pessoas não representam profissionais da TaskGO.
+   Origem: vídeo de banco de imagens que já estava no projeto (o nome segue o padrão do Pexels, id 8853466; licença a confirmar). */
+const VIDEO_TOPO='assets/8853466-hd_1920_1080_24fps.mp4';
+/* Quem prefere menos movimento recebe o vídeo parado; qualquer pessoa pode pausar. */
+let videoPausado=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function rotuloVideo(){return ic(videoPausado?'play':'pause')+'<span>'+(videoPausado?'Reproduzir vídeo':'Pausar vídeo')+'</span>';}
+function alternarVideo(botao){
+  videoPausado=!videoPausado;
+  const video=$('.hero-campo video');
+  if(video){if(videoPausado)video.pause();else video.play().catch(()=>{});}
+  botao.innerHTML=rotuloVideo();
+  botao.setAttribute('aria-pressed',String(videoPausado));
+}
+/* O vídeo para quando sai da tela ou a aba fica oculta, e volta sozinho se não foi pausado. */
+let observadorVideo=null;
+function ligarVideoTopo(){
+  const video=$('.hero-campo video');
+  if(observadorVideo){observadorVideo.disconnect();observadorVideo=null;}
+  if(!video)return;
+  const ajustar=visivel=>{if(videoPausado||!visivel||document.hidden)video.pause();else video.play().catch(()=>{});};
+  if('IntersectionObserver' in window){
+    observadorVideo=new IntersectionObserver(itens=>ajustar(itens[0].isIntersecting),{threshold:.1});
+    observadorVideo.observe(video);
+  }else ajustar(true);
+}
+document.addEventListener('visibilitychange',()=>{const v=$('.hero-campo video');if(!v)return;if(document.hidden||videoPausado)v.pause();else v.play().catch(()=>{});});
 function heroCampo(){
-  const foto=FOTO_PRINCIPAL?'<img class="hero-foto" src="'+FOTO_PRINCIPAL+'" alt="'+esc(FOTO_PRINCIPAL_ALT)+'">':desenhoRaio();
-  return '<div class="hero-campo">'+foto+'</div>';
+  let midia;
+  if(VIDEO_TOPO)midia='<video class="hero-foto hero-video" muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1"><source src="'+VIDEO_TOPO+'" type="video/mp4"></video>';
+  else if(FOTO_PRINCIPAL)midia='<img class="hero-foto" src="'+FOTO_PRINCIPAL+'" alt="'+esc(FOTO_PRINCIPAL_ALT)+'">';
+  else midia=desenhoRaio();
+  return '<div class="hero-campo">'+midia+'</div>';
 }
 /* Prévia do fluxo do profissional: protótipo com dados fictícios, sem chamar a API. */
 const FLUXO_ETAPAS=[
@@ -27,8 +56,8 @@ const FLUXO_ETAPAS=[
   ['Status','Aguardando','A caminho. Você atualiza a cada etapa.','Atualizar status']
 ];
 let fluxoEtapa=0;
-function fluxoLinhas(){
-  return FLUXO_ETAPAS.map((e,i)=>'<li class="ticket-linha'+(i<=fluxoEtapa?' feita':'')+'"><span class="ticket-chave">'+e[0]+'</span><span>'+(i<=fluxoEtapa?e[2]:e[1])+'</span></li>').join('');
+function fluxoLinhas(nova){
+  return FLUXO_ETAPAS.map((e,i)=>'<li class="ticket-linha'+(i<=fluxoEtapa?' feita':'')+(i===nova?' nova'+(e[0]==='Endereço'?' tarja':''):'')+'"><span class="ticket-chave">'+e[0]+'</span><span>'+(i<=fluxoEtapa?e[2]:e[1])+'</span></li>').join('');
 }
 function fluxoRotulo(){return fluxoEtapa<FLUXO_ETAPAS.length-1?FLUXO_ETAPAS[fluxoEtapa+1][3]:'Ver de novo';}
 function fluxoProfissional(){
@@ -40,7 +69,8 @@ function fluxoProfissional(){
 }
 function avancarFluxo(){
   fluxoEtapa=fluxoEtapa<FLUXO_ETAPAS.length-1?fluxoEtapa+1:0;
-  $('#fluxoLinhas').innerHTML=fluxoLinhas();
+  /* Só a linha recém-liberada anima; ao recomeçar, nenhuma. */
+  $('#fluxoLinhas').innerHTML=fluxoLinhas(fluxoEtapa||-1);
   $('#fluxoBtn').textContent=fluxoRotulo();
   const e=FLUXO_ETAPAS[fluxoEtapa];
   $('#fluxoAviso').textContent=e[0]+': '+e[2];
@@ -50,7 +80,8 @@ function pageHome(){
     duo('você escolhe o pedido.','o endereço só aparece depois do aceite.',1)+
     '<p class="hero-sub">A TaskGO aproxima profissionais autônomos de quem precisa de serviços locais. O projeto está em desenvolvimento, e queremos ouvir quem vai usá-lo antes do lançamento.</p>'+
     '<div class="setas">'+linkSeta('#/profissionais','Sou profissional',1)+linkSeta('#/servicos','Preciso de um serviço')+'</div>'+
-    '<p class="hero-fase">Em desenvolvimento · Recife</p>'+
+    '<div class="hero-rodape"><p class="hero-fase">Em desenvolvimento · Recife</p>'+
+    (VIDEO_TOPO?'<button type="button" class="hero-pausa" aria-pressed="'+videoPausado+'" onclick="alternarVideo(this)">'+rotuloVideo()+'</button>':'')+'</div>'+
   '</div></div></section>'+
 
   folha('o problema','<p class="manifesto">Hoje, indicação, conversa, combinação de preço e acompanhamento ficam espalhados entre canais diferentes. <strong>A TaskGO reúne tudo em um só fluxo.</strong></p>','folha-densa')+
