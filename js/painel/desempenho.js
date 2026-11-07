@@ -2,7 +2,7 @@
 function dashDesempenho(){
   if(!DEMO_MODE)return dashHead('Desempenho','Indicadores de aceite e faturamento ainda estão em desenvolvimento.')+
     '<div class="card emptystate">'+ic('trendUp')+'<b>Ainda não há indicadores</b><p style="margin-top:6px">Quando houver atendimentos reais, seus resultados aparecerão aqui.</p>'+
-    '<a class="btn btn-primary" style="margin-top:16px" href="#/painel/oportunidades">Ver oportunidades</a></div>';
+    '<a class="btn btn-primary" style="margin-top:16px" href="#/app/oportunidades">Ver oportunidades</a></div>';
   const meses=['Abr','Mai','Jun','Jul','Ago','Set'],vals=[2140,2680,2310,3120,3580,4240];
   const maxv=Math.max.apply(null,vals);
   return dashHead('Desempenho demonstrativo','Valores fictícios do modo demonstração.')+

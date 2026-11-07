@@ -39,7 +39,7 @@ function notifyOrderOther(o,t,d,meta={}){
   const other=u.role==='profissional'
     ?S.users.find(x=>x.role==='cliente'&&x.id===o.clientId)
     :S.users.find(x=>x.role==='profissional'&&x.proId===o.proId);
-  return other?notifyUser(other.id,t,d,Object.assign({orderId:o.id,route:'/painel/pedido/'+o.id},meta)):null;
+  return other?notifyUser(other.id,t,d,Object.assign({orderId:o.id,route:'/app/pedido/'+o.id},meta)):null;
 }
 async function markNotifRead(id){
   const n=myNotifs().find(x=>x.id===id);if(!n)return;
@@ -61,14 +61,14 @@ async function saveUser(patch){
   const u=me();if(!u)return false;
   const seguro={...patch};delete seguro.pass;
   if(DEMO_MODE){Object.assign(u,seguro);Store.save();return true;}
-  const permitido=new Set(['name','cpf','phone','city','address','bio','service','birth','photo','notif','pixKey']);
+  const permitido=new Set(['name','cpf','phone','city','address','bio','service','birth','photo','notif','pixKey','addresses']);
   const invalidos=Object.keys(seguro).filter(key=>!permitido.has(key));
   if(invalidos.length)throw new Error('Este recurso ainda não está disponível para contas reais: '+invalidos.join(', '));
   if(!String(u.id).startsWith('db_'))throw new Error('A sessão persistida não foi confirmada pelo servidor.');
   const server={nome:seguro.name??u.name,cpf:seguro.cpf??u.cpf,telefone:seguro.phone??u.phone,cidade:seguro.city??u.city,endereco:seguro.address??u.address,bio:seguro.bio??u.bio,service:seguro.service??u.service,birth:seguro.birth??u.birth};
   const profile=await fetch(API_BASE_URL+'/api/auth/perfil',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(server)});
   if(!profile.ok)throw new Error('Não foi possível salvar o perfil no servidor (HTTP '+profile.status+').');
-  const extras={profile:{photo:seguro.photo??u.photo,notif:seguro.notif??u.notif,pixKey:seguro.pixKey??u.pixKey}};
+  const extras={profile:{photo:seguro.photo??u.photo,notif:seguro.notif??u.notif,pixKey:seguro.pixKey??u.pixKey,addresses:seguro.addresses??u.addresses??[]}};
   const extraResponse=await fetch(API_BASE_URL+'/api/auth/dados',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({dados:extras})});
   if(!extraResponse.ok)throw new Error('Perfil salvo, mas as preferências não foram confirmadas pelo servidor.');
   Object.assign(u,seguro);Store.save();
@@ -99,6 +99,6 @@ function toggleTheme(){
     raiz.animate({clipPath:['circle(0px at '+x+'px '+y+'px)','circle('+raio+'px at '+x+'px '+y+'px)']},
       {duration:720,easing:'cubic-bezier(.65,0,.25,1)',pseudoElement:'::view-transition-new(root)'});
   }).catch(()=>{});
-  transicao.finished.finally(()=>raiz.classList.remove('tema-trocando'));
+  transicao.finished.catch(()=>{}).finally(()=>raiz.classList.remove('tema-trocando'));
 }
 

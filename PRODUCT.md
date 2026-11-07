@@ -68,6 +68,13 @@ A TaskGO aproxima profissionais autônomos e pessoas que precisam de serviços l
 
 **Não existe e não pode ser inventado:** clientes, profissionais em atividade, depoimentos, logos de parceiros, avaliações reais, métricas de resultado ou imprensa. Pessoas de banco de imagens não podem representar integrantes do time nem profissionais cadastrados.
 
+## Information Architecture
+
+- **Site** (`#/home` e páginas públicas): só apresenta a TaskGO.
+- **Área de uso** (`#/app`): depois do login, com abas. Cliente: Contratar, Meus pedidos, Mensagens, Avaliações, Notificações e Carteira. Profissional: Oportunidades, Atendimentos, Agenda, Desempenho, Mensagens, Avaliações, Notificações e Carteira. A carteira mostra resgate, forma de pagamento e forma de resgate (PIX ou banco) como "ainda não disponível", sem salvar dados.
+- **Painel** (`#/painel`): só o perfil (dados, foto, segurança e exclusão).
+- Depois do login, a pessoa vai para a área de uso; no primeiro acesso neste navegador, para o perfil.
+
 ## Product Principles
 
 1. **O profissional vem primeiro.** Quando as necessidades dos dois públicos competirem, a decisão parte do que faz o profissional conseguir trabalhar.

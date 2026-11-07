@@ -2,9 +2,20 @@
    AUTENTICAÇÃO
    ========================================================= */
 let A={mode:'login',role:'cliente'};
+/* Para onde ir depois de entrar: o pedido de volta (?next=) vence; senão cliente vai contratar e profissional vê as oportunidades. */
+function destinoAposEntrar(){
+  const u=me();
+  /* Primeiro acesso desta conta neste navegador: completar o perfil antes de usar. */
+  const chave='taskgo-ja-entrou',email=String(u?.email||'').toLowerCase();
+  let vistos=[];try{vistos=JSON.parse(localStorage.getItem(chave)||'[]');}catch(e){}
+  if(email&&!vistos.includes(email)){vistos.push(email);try{localStorage.setItem(chave,JSON.stringify(vistos));}catch(e){}return '/painel';}
+  const proximo=String(route.q.next||'').replace(/[^a-z0-9\/-]/gi,'');
+  if(proximo&&proximo!=='contratar')return '/'+proximo;
+  return u?.role==='profissional'?'/app/oportunidades':'/app/contratar';
+}
 function pageEntrar(){
   if(route.q.tipo&&!A._init){A.role=route.q.tipo;A.mode='signup';A._init=1;}
-  if(me()){go('/painel');return '';}
+  if(me()){go(destinoAposEntrar());return '';}
   const isLogin=A.mode==='login';
   return '<div class="auth-wrap">'+
   '<div class="auth-side">'+
@@ -18,6 +29,7 @@ function pageEntrar(){
   '</div>'+
   '<div class="auth-main"><div class="auth-card">'+
   '<h1 class="lp-auth-title">'+(isLogin?'Bem-vindo de volta':'Criar sua conta')+'</h1>'+
+  (/contratar/.test(route.q.next||'')?'<p class="aviso-linha" role="status">Entre na sua conta para contratar um serviço.</p>':'')+
   '<p class="muted lp-auth-sub">'+(isLogin?'Acesse seu painel TaskGO.':'Leva menos de 1 minuto e é grátis.')+'</p>'+
   '<div class="tabs"><button data-fk="aba-entrar" aria-pressed="'+isLogin+'" class="'+(isLogin?'active':'')+'" onclick="A.mode=\'login\';render()">Entrar</button>'+
   '<button data-fk="aba-criar" aria-pressed="'+!isLogin+'" class="'+(!isLogin?'active':'')+'" onclick="A.mode=\'signup\';render()">Criar conta</button></div>'+
@@ -209,7 +221,7 @@ async function doAuth(e){
       try{await syncDadosConta(emailApi);}catch(erro){console.error('Falha ao sincronizar dados da conta:',erro);}
       window.__taskgoHydrating=false;Store.save();
       toast('Bem-vindo, '+String(nome).split(' ')[0]+'!','ok');
-      return go(route.q.next?'/'+route.q.next:'/painel');
+      return go(destinoAposEntrar());
     }catch(erro){
       console.error('Erro no login:',erro);
       toast('E-mail ou senha incorretos','err');
@@ -269,13 +281,13 @@ async function doAuth(e){
   if(u.role==='profissional')return enviarCadastro(async()=>{
     S.users.push(u);S.session=u.id;Store.save();
     try{await carregarProfissionaisPersistidos();}catch(error){console.error(error);}
-    go('/painel/config');
+    go(destinoAposEntrar());
   });
   return enviarCadastro(()=>{
     u.since=Date.now();
     S.users.push(u);
     S.session=u.id;Store.save();
-    go('/painel');
+    go(destinoAposEntrar());
   });
 }
 async function logout(){
@@ -284,6 +296,8 @@ async function logout(){
   const current=me();if(current?.id?.startsWith('db_'))S.users=S.users.filter(user=>user!==current);
   S.session=null;S.orders=[];S.tx=[];S.chats=[];S.notifs=[];
   try{await carregarProfissionaisPersistidos();}catch(error){console.error(error);}
-  Store.save();toast('Você saiu da conta');go('/home');
+  fecharMenuConta();Store.save();toast('Você saiu da conta');
+  /* Já na Início, o endereço não muda; então é preciso redesenhar para tirar a conta do cabeçalho. */
+  if(location.hash==='#/home')render();else go('/home');
 }
 

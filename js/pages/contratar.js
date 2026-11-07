@@ -3,6 +3,8 @@
    ========================================================= */
 let W={step:1,service:'',urgency:'hoje',size:'medio',cameraCount:'1',radius:'10',addr:'',notes:'',date:'',pro:null,proQuote:null,est:null,pay:'pix',presetService:'',savedEstimateKeys:{}};
 function pageContratar(){
+  /* Contratar exige conta: sem login, vai para Entrar e volta para cá depois. */
+  if(!me()){go('/entrar?next=app/contratar');return '';}
   if(route.q.servico&&W.step===1&&W.presetService!==route.q.servico){W.service=route.q.servico;W.presetService=route.q.servico;}
   if(route.q.raio)W.radius=route.q.raio;
   const names=['Serviço','Detalhes','Estimativa','Profissional','Confirmação'];
@@ -13,6 +15,7 @@ function pageContratar(){
   else if(W.step===3)body=wStep3();
   else if(W.step===4)body=wStep4();
   else body=wStep5();
+  if(route.page==='app')return dashHead('Contratar','A contratação ainda não está aberta: o pedido não pode ser enviado, porque o pagamento não está disponível.')+nav+'<div class="card">'+body+'</div>';
   return folha('contratar',duo('descreva o serviço','que você precisa',1)+'<p class="corpo">A contratação ainda não está aberta: o pedido não pode ser enviado, porque o pagamento não está disponível.</p>','cabeca')+
   '<section class="folha-densa" style="padding-top:0"><div class="wrap folha-in"><div class="folha-corpo">'+nav+'<div class="card">'+body+'</div></div></div></section>';
 }
@@ -64,27 +67,22 @@ function wStep1(){
   '<div style="display:flex;justify-content:flex-end;margin-top:26px"><button class="btn btn-primary" onclick="wGo(2)">Continuar '+ic('arrow')+'</button></div>';
 }
 function wStep2(){
-  const u=me();
-  const scopeField=W.service==='cftv'
-    ?'<div class="field"><label>Quantidade de câmeras</label><select class="select" onchange="wSet(\'cameraCount\',this.value)">'+[1,2,4,6,8,12,16].map(n=>'<option value="'+n+'" '+(Number(W.cameraCount)===n?'selected':'')+'>'+n+(n===1?' câmera':' câmeras')+'</option>').join('')+'</select><div class="hint">A estimativa considera a instalação. Equipamentos são cobrados à parte.</div></div>'
-    :'<div class="field"><label>Porte do serviço</label><select class="select" onchange="W.size=this.value">'+[['pequeno','Pequeno (até 1h)'],['medio','Médio (2 a 4h)'],['grande','Grande (dia inteiro ou mais)']].map(o=>'<option value="'+o[0]+'" '+(W.size===o[0]?'selected':'')+'>'+o[1]+'</option>').join('')+'</select></div>';
+  /* Só o que o cliente sabe responder: onde, quando e o que está acontecendo. O tamanho do serviço o profissional avalia. */
   return '<h2 class="sub" style="margin-bottom:20px">Conte os detalhes</h2>'+
-  '<div class="field"><label>Endereço do atendimento</label><input class="input" id="wAddr" placeholder="Rua, número, bairro, cidade" value="'+esc(W.addr||(u?u.address:''))+'" oninput="W.addr=this.value"></div>'+
-  '<div class="grid g2" style="gap:16px">'+
-  scopeField+
+  campoEnderecoContratar()+
+  '<div class="grid g2" style="gap:0 16px">'+
   '<div class="field"><label>Urgência</label><select class="select" onchange="wSet(\'urgency\',this.value)">'+
-  [['agora','Agora (emergência)'],['hoje','Ainda hoje'],['agendar','Quero agendar']].map(o=>'<option value="'+o[0]+'" '+(W.urgency===o[0]?'selected':'')+'>'+o[1]+'</option>').join('')+'</select></div></div>'+
+  [['agora','Agora (emergência)'],['hoje','Ainda hoje'],['agendar','Quero agendar']].map(o=>'<option value="'+o[0]+'" '+(W.urgency===o[0]?'selected':'')+'>'+o[1]+'</option>').join('')+'</select></div>'+
   (W.urgency==='agendar'?'<div class="field"><label>Data e hora desejadas</label><input class="input" type="datetime-local" onchange="W.date=this.value" value="'+esc(W.date)+'"></div>':'')+
-  '<div class="field"><label>Raio de busca</label><select class="select" onchange="W.radius=this.value">'+
-  ['5','10','20','40'].map(r=>'<option value="'+r+'" '+(W.radius===r?'selected':'')+'>Até '+r+' km</option>').join('')+'</select></div>'+
-  '<div class="field"><label>Descreva o problema (opcional)</label><textarea class="textarea" placeholder="Ex.: disjuntor desarmando toda vez que ligo o chuveiro" oninput="W.notes=this.value">'+esc(W.notes)+'</textarea></div>'+
-  '<div class="field"><label>Fotos do local (opcional)</label><input class="input" type="file" accept="image/*" multiple><div class="hint">Fotos ajudam o profissional a levar as ferramentas certas.</div></div>'+
+  '</div>'+
+  '<div class="field"><label>Descreva o problema (opcional)</label><textarea class="textarea" placeholder="Ex.: disjuntor desarmando toda vez que ligo o chuveiro" oninput="W.notes=this.value">'+esc(W.notes)+'</textarea>'+
+  '<div class="hint">Conte o que acontece, onde e quantas peças ou cômodos. O profissional usa isso para entender o tamanho do serviço.</div></div>'+
   '<div style="display:flex;justify-content:space-between;margin-top:26px"><button class="btn btn-ghost" onclick="wGo(1)">'+ic('arrowLeft')+' Voltar</button>'+
   '<button class="btn btn-grad" onclick="wGo(3)">Ver referência de preço '+ic('arrow')+'</button></div>';
 }
 function wStep3(){
   const estimate=W.est||currentEstimate(),service=svc(W.service);
-  const range=service.id==='cftv'?'TOTAL INDICATIVO PARA '+estimate.quantity+' CÂMERAS':'REFERÊNCIA POR '+service.unit.toUpperCase();
+  const range='REFERÊNCIA POR '+service.unit.toUpperCase();
   return '<h2 class="sub" style="margin-bottom:6px">Faixa de referência do catálogo</h2>'+ 
   '<p class="muted" style="font-size:.9rem;margin-bottom:22px">Valores gerais da categoria. Não são preço calculado por IA nem proposta de profissional.</p>'+ 
   '<div class="card center" style="padding:30px"><span class="muted" style="font-size:.82rem;font-weight:700">'+range+'</span>'+ 
@@ -116,7 +114,7 @@ function wStep5(){
 }
 /* Real checkout is unavailable until a payment provider is configured. */
 function abrirCheckout(){
-  if(!me()){toast('Faca login para continuar.','err');return go('/entrar?next=contratar');}
+  if(!me()){toast('Faca login para continuar.','err');return go('/entrar?next=app/contratar');}
   openModal('<div class="modal-head"><div><h3>Pagamentos indisponiveis</h3><p>O checkout esta desativado.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div><div class="card"><p class="muted">O TaskGO ainda nao esta conectado a um provedor. Nenhuma cobranca sera criada e nenhum pedido sera marcado como pago.</p></div>');
 }
 function trocarMetodoCheckout(){toast('Checkout indisponivel.','err');}

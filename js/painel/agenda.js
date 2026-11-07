@@ -43,13 +43,13 @@ function dashAgenda(){
   '<div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px">'+
   '<h2 class="sub" >'+sel.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'})+'</h2>'+
   (doDia.length?'<span class="pill">'+ic('wallet')+' Previsto: '+money(total)+' · '+doDia.length+' atendimento'+(doDia.length>1?'s':'')+'</span>':'')+'</div>'+
-  (doDia.length?doDia.map(e=>'<div class="rowitem"'+(e.id?' style="cursor:pointer" onclick="go(\'/painel/pedido/'+e.id+'\')"':'')+'>'+
+  (doDia.length?doDia.map(e=>'<div class="rowitem"'+(e.id?' style="cursor:pointer" onclick="go(\'/app/pedido/'+e.id+'\')"':'')+'>'+
   '<div style="text-align:center;flex:none;width:58px"><b style="font-size:.95rem">'+e.h+'</b>'+
   '<small class="muted" style="display:block">'+sel.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+'</small></div>'+
   '<div class="grow" style="border-left:1px solid var(--line);padding-left:14px"><b>'+esc(e.t)+'</b><small>'+ic('mapPin')+' '+esc(e.b||'—')+(e.v?' · '+money(e.v):'')+'</small></div>'+
   '<span class="tag '+(e.st==='confirmado'?'tag-ok':'tag-warn')+'">'+e.st+'</span></div>').join('')
   :'<div class="card emptystate">'+ic('cal')+'<b>Nenhum atendimento neste dia</b><p style="margin-top:6px">Veja se há pedidos da sua categoria aguardando aceite.</p>'+
-   '<a class="btn btn-primary" style="margin-top:16px" href="#/painel/oportunidades">Ver oportunidades</a></div>');
+   '<a class="btn btn-primary" style="margin-top:16px" href="#/app/oportunidades">Ver oportunidades</a></div>');
 }
 function bloquearHorario(){
   openModal('<div class="modal-head"><div><h3>Bloquear horário</h3><p>Nenhum pedido será enviado nesse período.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+

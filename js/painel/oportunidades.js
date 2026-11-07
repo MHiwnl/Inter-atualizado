@@ -40,7 +40,7 @@ async function aceitarPedidoPersistido(id){
     if(!body||String(body.id)!==String(id))throw new Error('O servidor retornou um pedido inválido.');
     body._persisted=true;
     const i=S.orders.findIndex(o=>String(o.id)===String(id));if(i<0)S.orders.unshift(body);else S.orders[i]=Object.assign(S.orders[i],body);
-    Store.save();toast('Pedido aceito! Siga para o endereço do cliente.','ok');go('/painel/pedido/'+encodeURIComponent(id));
+    Store.save();toast('Pedido aceito! Siga para o endereço do cliente.','ok');go('/app/pedido/'+encodeURIComponent(id));
   }catch(error){
     console.error('Erro ao aceitar pedido:',error);toast(error.message||'Não foi possível aceitar o pedido.','err');
     if(button){button.disabled=false;button.textContent='Aceitar pedido';}

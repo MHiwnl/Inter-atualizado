@@ -3,7 +3,7 @@ let trackTimer=null;
 let gpsWatchId=null,gpsWatchOrder=null,gpsLastSent=0;
 function dashPedido(id){
   const o=S.orders.find(x=>x.id===id);
-  if(!o)return '<div class="card emptystate">'+ic('x')+'Pedido não encontrado<div style="margin-top:14px"><a class="btn btn-ghost" href="#/painel/pedidos">Voltar</a></div></div>';
+  if(!o)return '<div class="card emptystate">'+ic('x')+'Pedido não encontrado<div style="margin-top:14px"><a class="btn btn-ghost" href="#/app/pedidos">Voltar</a></div></div>';
   const p=proById(o.proId),cli=clientOf(o),s=svc(o.service),isPro=me().role==='profissional',cp=isPro?cli:p;
   const cpRating=Number(cp.rating)||0;
   const cpRatingHtml=cpRating>0?stars(cpRating)+' '+cpRating.toFixed(1):'<span class="muted">Sem avaliações</span>';
@@ -11,7 +11,7 @@ function dashPedido(id){
   const stepsArr=['aguardando','a_caminho','chegou','em_andamento','concluido'];
   const curIdx=Math.max(0,stepsArr.indexOf(o.status));
   const live=o.status==='a_caminho';
-  return '<a href="#/painel/pedidos" class="pill" style="margin-bottom:18px">'+ic('arrowLeft')+' Meus pedidos</a>'+
+  return '<a href="#/app/pedidos" class="pill" style="margin-bottom:18px">'+ic('arrowLeft')+' Meus pedidos</a>'+
   dashHead(s.n,'Criado em '+dt(o.created),stTag(o.status))+
   '<div class="grid g2" style="grid-template-columns:1.35fr .65fr;align-items:start">'+
   '<div>'+
@@ -24,7 +24,7 @@ function dashPedido(id){
       '<span class="muted">'+esc(o.address||'')+'</span></div>'+ 
       '<div class="track-steps">'+['Aguardando aceite','A caminho','Chegou','Em andamento','Concluído'].map((t,i)=>'<div class="tstep '+(i<curIdx?'done':i===curIdx?'now':'')+'">'+t+'</div>').join('')+'</div>'+ 
       '<div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">'+
-      '<a class="btn btn-ghost btn-sm" href="#/painel/mensagens">'+ic('chat')+' Mensagem</a>'+
+      '<a class="btn btn-ghost btn-sm" href="#/app/mensagens">'+ic('chat')+' Mensagem</a>'+
       '<button class="btn btn-danger btn-sm" onclick="emergencia()">'+ic('phone')+' Ligar para 190 ou 192</button></div>'+
     '</div>':'')+
     /* CÓDIGO */
@@ -61,7 +61,7 @@ function dashPedido(id){
      '<div style="flex:1;min-width:200px"><b>'+(isPro?'Serviço concluído':'Pedido finalizado')+'</b><p class="muted" style="font-size:.88rem">'+(reviewRating?'Você avaliou com '+reviewRating+' estrelas.':(isPro?'Conte como foi sua experiência com o cliente.':'Avalie o profissional que realizou o serviço.'))+'</p></div>'+ 
      (reviewRating?stars(reviewRating):'<button class="btn btn-primary" onclick="abrirAvaliacao(\''+o.id+'\')">'+ic('star')+' '+(isPro?'Avaliar cliente':'Avaliar profissional')+'</button>')+'</div>'+ 
      '<div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="baixarRecibo(\''+o.id+'\')">'+ic('file')+' Baixar recibo</button>'+
-     '<a class="btn btn-ghost btn-sm" href="#/contratar?servico='+o.service+'">'+ic('refresh')+' Contratar novamente</a></div></div>':'')+
+     '<a class="btn btn-ghost btn-sm" href="#/app/contratar?servico='+o.service+'">'+ic('refresh')+' Contratar novamente</a></div></div>':'')+
     (o.notes?'<div class="card" style="margin-top:20px"><b style="font-size:.9rem">Descrição do pedido</b><p class="muted" style="font-size:.9rem;margin-top:8px">'+esc(o.notes)+'</p></div>':'')+
   '</div>'+
   '<div>'+
@@ -176,7 +176,7 @@ async function pararCompartilhamentoPedido(id){
   try{const response=await fetch(API_BASE_URL+'/api/pedidos/contratados/'+encodeURIComponent(id)+'/localizacao',{method:'DELETE'});if(!response.ok)throw new Error('O servidor não confirmou o encerramento.');pararCompartilhamentoGPS();if(window.taskgoGpsMap){window.taskgoGpsMap.remove();window.taskgoGpsMap=null;window.taskgoGpsMapNode=null;}const node=$('#mapa-rastreio');if(node)node.innerHTML='<div class="card center muted" style="padding:40px">Compartilhamento de localização encerrado.</div>';gpsStatus('Compartilhamento encerrado. Para voltar a compartilhar, solicite novamente.');}
   catch(error){toast(error.message||'Não foi possível encerrar o compartilhamento.','err');}
 }
-window.addEventListener('hashchange',()=>{if(!location.hash.includes('/painel/pedido/'))pararCompartilhamentoGPS();});
+window.addEventListener('hashchange',()=>{if(!location.hash.includes('/app/pedido/'))pararCompartilhamentoGPS();});
 window.addEventListener('beforeunload',pararCompartilhamentoGPS);
 function abrirValidacao(id){
   openModal('<div class="modal-head"><div><h3>Validar chegada</h3><p>Digite o código de 4 dígitos para iniciar o serviço.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
@@ -207,7 +207,7 @@ async function recusarPedidoCliente(id){
   const o=S.orders.find(x=>x.id===id),u=me();
   if(!o||!u||u.role!=='profissional'||o.proId!==u.proId)return toast('Este pedido não pertence ao seu perfil.','err');
   if(o.status!=='aguardando')return toast('Este pedido já foi respondido.','err');
-  try{await guardarPedidoAlterado(o,{status:'cancelado',cancelReason:'professional_unavailable'});toast('Pedido recusado.','ok');go('/painel/pedidos');}
+  try{await guardarPedidoAlterado(o,{status:'cancelado',cancelReason:'professional_unavailable'});toast('Pedido recusado.','ok');go('/app/pedidos');}
   catch(error){toast(error.message||'O servidor não confirmou a recusa.','err');}
 }
 let ratingVal=5;

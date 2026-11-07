@@ -6,13 +6,21 @@ function parseHash(){
   const parts=pathPart.split('/').filter(Boolean);
   const q={};
   if(queryPart)queryPart.split('&').forEach(kv=>{const[a,b]=kv.split('=');q[decodeURIComponent(a)]=decodeURIComponent(b||'');});
-  return {page:parts[0]||'home',sub:parts[1]||'',id:parts[2]||'',q};
+  let page=parts[0]||'home',sub=parts[1]||'',id=parts[2]||'';
+  /* Endereços antigos: o uso saiu do painel e de Contratar para a área (#/app); o painel ficou só com o perfil. */
+  if(page==='painel'&&sub&&sub!=='config'){page='app';}
+  else if(page==='painel'&&sub==='config'){sub='';}
+  else if(page==='contratar'){page='app';id='';sub='contratar';}
+  return {page,sub,id,q};
 }
 function go(path){location.hash=path;}
 window.addEventListener('hashchange',()=>{
   route=parseHash();
   const trocar=()=>{window.scrollTo({top:0,behavior:'instant'});render();document.getElementById('conteudo')?.focus({preventScroll:true});};
   /* Transição curta entre páginas onde o navegador oferece; nos outros, a troca é direta. */
-  if(document.startViewTransition)document.startViewTransition(trocar);else trocar();
+  if(!document.startViewTransition){trocar();return;}
+  /* Duas trocas seguidas cancelam a transição anterior; isso é esperado e não é erro. */
+  const t=document.startViewTransition(trocar);
+  t.ready.catch(()=>{});t.finished.catch(()=>{});
 });
 

@@ -91,3 +91,16 @@ svg.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.5;str
 .switch.on::after{left:23px;background:#fff}
 .check-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
 .check-row:last-child{border-bottom:0}
+/* Menu da conta no cabeçalho */
+.conta{position:relative}
+.conta-botao{gap:8px;max-width:190px}
+.conta-nome{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.conta-botao svg:last-child{width:14px;height:14px;transition:transform .16s}
+.conta-botao[aria-expanded="true"] svg:last-child{transform:rotate(180deg)}
+.conta-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:70;min-width:200px;padding:4px 0;background:var(--bg);border:1px solid var(--line-strong);animation:desce .18s var(--ease-out,ease-out)}
+.conta-menu[hidden]{display:none}
+.conta-menu a,.conta-menu button{display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;border:0;background:none;color:var(--text);font-family:var(--font-mono);font-size:.86rem;text-align:left;cursor:pointer}
+.conta-menu svg{width:16px;height:16px}
+.conta-menu a:hover,.conta-menu button:hover,.conta-menu a:focus-visible,.conta-menu button:focus-visible{background:var(--brand);color:#fff;outline:none}
+.conta-menu button{border-top:1px solid var(--line)}
+@media (max-width:560px){.conta-nome{display:none}}

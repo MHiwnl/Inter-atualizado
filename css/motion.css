@@ -92,3 +92,23 @@ header.site{view-transition-name:cabecalho}
   :root.tema-trocando::view-transition-new(root){animation:aparece .25s both}
   :root.tema-trocando [data-fk="tema"] svg{animation:aparece .25s both}
 }
+
+/* ---------- Aviso de login para contratar ---------- */
+.aviso-login{position:fixed;z-index:1400;width:300px;padding:14px 16px 0;background:var(--bg);border:1px solid var(--line-strong);color:var(--text);transform-origin:top center;animation:aviso-entra .32s var(--ease-out) both}
+.aviso-login::before{content:"";position:absolute;top:-6px;left:var(--seta,50%);width:10px;height:10px;background:var(--bg);border-left:1px solid var(--line-strong);border-top:1px solid var(--line-strong);transform:translateX(-50%) rotate(45deg)}
+.aviso-login-largo{left:12px;right:12px;top:calc(var(--hdr) + 10px);width:auto}
+.aviso-login-largo::before{display:none}
+.aviso-login-topo{display:flex;gap:12px;align-items:flex-start;padding-bottom:14px}
+.aviso-login-topo svg{flex:none;width:20px;height:20px;margin-top:1px;color:var(--brand-2);animation:cadeado .5s .15s var(--ease-out) both}
+.aviso-login b{display:block;font-family:var(--font-mono);font-size:.86rem;font-weight:600}
+.aviso-login span{display:block;margin-top:3px;font-size:.8rem;color:var(--text-2)}
+.aviso-login-barra{display:block;height:3px;margin:0 -16px;background:var(--brand);transform-origin:left center;animation:aviso-barra var(--espera,1600ms) linear both}
+.aviso-login.saindo{animation:aviso-sai .22s var(--ease-in) both}
+@keyframes aviso-entra{from{opacity:0;transform:translateY(-8px) scale(.96)}}
+@keyframes aviso-sai{to{opacity:0;transform:translateY(-6px)}}
+@keyframes aviso-barra{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes cadeado{0%{transform:rotate(0)}30%{transform:rotate(-14deg)}60%{transform:rotate(10deg)}100%{transform:rotate(0)}}
+@media (prefers-reduced-motion:reduce){
+  .aviso-login,.aviso-login.saindo{animation:aparece .2s both}
+  .aviso-login-topo svg{animation:none}
+}

@@ -21,7 +21,7 @@ function dashMensagens(){
   }).join('')+'</div>'+
   '<div class="card"><div style="display:flex;align-items:center;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--line);margin-bottom:16px">'+
   avatar({name:p.name},44)+'<div style="flex:1"><b style="display:block">'+esc(p.name)+'</b><span class="muted" style="font-size:.8rem">Conversa vinculada ao pedido</span></div>'+ 
-  '<a class="btn btn-ghost btn-sm" href="#/painel/pedido/'+c.orderId+'">Ver pedido</a></div>'+
+  '<a class="btn btn-ghost btn-sm" href="#/app/pedido/'+c.orderId+'">Ver pedido</a></div>'+
   '<div class="chat" id="chatBox">'+(c.msgs.length?c.msgs.map(m=>'<div class="msg '+(m.me?'me':'them')+'">'+(m.automatic?'<small>Resposta automática</small>':'')+esc(m.t)+'<small>'+new Date(m.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+(m.me&&m.readAt?' · Lida':'')+'</small></div>').join(''):'<p class="hint center">Ainda não há mensagens nesta conversa.</p>')+'</div>'+ 
   '<form style="display:flex;gap:10px;margin-top:16px" onsubmit="enviarMsg(event)">'+
     '<input class="input" id="msgIn" aria-label="Mensagem" placeholder="Escreva uma mensagem..." autocomplete="off">'+

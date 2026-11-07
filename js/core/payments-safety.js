@@ -9,7 +9,7 @@ if(S.tx.length){S.tx=[];paymentsDemoStateCleared=true;}
 if(paymentsDemoStateCleared)Store.save();
 
 function abrirCheckout(){
-  if(!me()){toast('Faça login para continuar.','err');return go('/entrar?next=contratar');}
+  if(!me()){toast('Faça login para continuar.','err');return go('/entrar?next=app/contratar');}
   openModal('<div class="modal-head"><div><h3>Pagamentos indisponíveis</h3><p>O checkout está desativado.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+ 
     '<div class="card"><p class="muted">O TaskGO ainda não está conectado a um provedor de pagamentos. Nenhuma cobrança será criada e nenhum pedido será marcado como pago.</p></div>');
 }
@@ -45,7 +45,7 @@ async function carregarCarteiraFinanceira(){
     const data={wallet:await walletResponse.json(),transactions:await txResponse.json(),withdrawals:await withdrawalResponse.json()};
     if(me()?.id===requestedUserId)financePageData=data;
   }catch(error){financePageError=error.message||'Falha ao consultar os dados financeiros.';}
-  finally{financePageLoading=false;if(route.page==='painel'&&route.sub==='carteira')render();}
+  finally{financePageLoading=false;if(route.page==='app'&&route.sub==='carteira')render();}
 }
 function dashCarteira(){
   if(DEMO_MODE)return dashHead('Carteira demonstrativa','Os valores abaixo são fictícios e não representam dinheiro real.')+
