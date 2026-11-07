@@ -15,6 +15,16 @@ function avatar(user,size){
   if(user&&user.photo)return '<img class="avatar" style="'+st+'" src="'+user.photo+'" alt="">';
   return '<div class="avatar" style="'+st+'">'+esc(initials(user?user.name:'?'))+'</div>';
 }
+/* Liga cada rótulo ao campo seguinte, para leitores de tela e para o clique no rótulo. */
+let rotuloSeq=0;
+function ligarRotulos(raiz){
+  (raiz||document).querySelectorAll('.field>label:not([for])').forEach(rotulo=>{
+    const campo=rotulo.parentElement.querySelector('input,select,textarea');
+    if(!campo)return;
+    if(!campo.id)campo.id='campo-'+(++rotuloSeq);
+    rotulo.htmlFor=campo.id;
+  });
+}
 function stars(n){let h='';for(let i=0;i<5;i++)h+='<svg viewBox="0 0 24 24" style="opacity:'+(i<Math.round(n)?1:.25)+'">'+I.star+'</svg>';return '<span class="stars">'+h+'</span>';}
 function toast(msg,type){
   const t=document.createElement('div');

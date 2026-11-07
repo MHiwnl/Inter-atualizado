@@ -16,7 +16,8 @@ function render(){
   const p=route.page;
   const focoAnterior=document.activeElement?.dataset?.fk;
   if(p!=='contratar')W.presetService='';
-  document.body.classList.toggle('lp',!['painel','seguranca','ajuda','contato','legal','contratar'].includes(p));
+  /* O site público é sempre escuro; só o painel tem tema claro. */
+  document.documentElement.setAttribute('data-surface',p==='painel'?'app':'site');
   let body='',full=false;
   if(p==='entrar'){body=pageEntrar();full=true;}
   else if(p==='recuperar'){body=pageRecuperar();full=true;}
@@ -32,12 +33,14 @@ function render(){
   else if(p==='legal')body=pageLegal();
   else if(p==='contratar')body=pageContratar();
   else body=pageHome();
-  const conteudo=p==='painel'?body:'<a class="skip-link" href="#conteudo" onclick="event.preventDefault();document.getElementById(\'conteudo\').focus()">Pular para o conteúdo</a>'+header()+'<main id="conteudo" tabindex="-1">'+body+'</main>';
+  const pular='<a class="skip-link" href="#conteudo" onclick="event.preventDefault();document.getElementById(\'conteudo\').focus()">Pular para o conteúdo</a>';
+  const conteudo=p==='painel'?pular+body:pular+header()+'<main id="conteudo" tabindex="-1">'+body+'</main>';
   document.getElementById('root').innerHTML=conteudo+(full?'':footer())+
-    (p==='painel'||p==='entrar'?'':'<button class="fab-help" onclick="abrirChatSuporte()" title="Ajuda" aria-label="Ajuda">'+ic('chat')+'</button>');
-  if(DEMO_MODE){const aviso=document.createElement('div');aviso.className='card';aviso.setAttribute('role','status');aviso.style.cssText='max-width:1180px;margin:10px auto;padding:10px 16px;border-color:var(--danger);color:var(--danger);font-size:.85rem';aviso.textContent='Modo demonstração: contas, profissionais, pedidos e avaliações exibidos são fictícios.';document.getElementById('root').prepend(aviso);}
-  enhanceInteractiveButtons(document.getElementById('root'));
+    (p==='painel'||p==='entrar'?'':'<a class="fab-help" href="#/ajuda" title="Ajuda" aria-label="Ajuda">'+ic('help')+'</a>');
+  if(DEMO_MODE){const aviso=document.createElement('div');aviso.className='demo-aviso';aviso.setAttribute('role','status');aviso.textContent='Modo demonstração: contas, profissionais, pedidos e avaliações exibidos são fictícios.';document.getElementById('root').prepend(aviso);}
   atualizarTituloAba(p);
+  ligarRotulos(document.getElementById('root'));
+  if(p==='painel')document.querySelector('.side a.active')?.scrollIntoView({inline:'center',block:'nearest',behavior:'instant'});
   if(focoAnterior)document.querySelector('[data-fk="'+focoAnterior+'"]')?.focus();
   /* pós-render */
   if(p==='profissionais')simular();
@@ -77,7 +80,3 @@ function render(){
     if(route.sub==='oportunidades')setTimeout(carregarPedidos,40);
   }
 }
-function abrirChatSuporte(){
-  openModal('<div class="modal-head"><div><h3>Suporte TaskGO</h3><p>O chat de suporte ainda não está conectado.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div><p class="muted">Use o formulário para registrar sua solicitação. A mensagem fica salva na TaskGO, mas ainda não é encaminhada por e-mail.</p><a class="btn btn-primary btn-block" href="#/contato" onclick="closeModal()">Abrir formulário de contato</a>');
-}
-

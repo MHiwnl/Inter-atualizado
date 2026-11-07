@@ -91,15 +91,15 @@ function mapSVG(id,seedStr){
   parks.forEach(k=>{o+=lb(k[0]+13,k[1]+26,k[4]);});
   o+='<text x="'+(lado==='cima'?420:lado==='esq'?24:400)+'" y="'+(lado==='cima'?34:lado==='esq'?300:496)+'" font-size="11" font-style="italic" fill="var(--map-label)" opacity=".9"'+(lado==='esq'?' transform="rotate(-80 24 300)"':'')+'>'+B.ag+'</text>';
   o+='<path d="'+d+'" fill="none" stroke="var(--map-road-casing)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>';
-  o+='<path id="rt'+id+'" d="'+d+'" fill="none" stroke="#3288ff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" filter="url(#gl'+id+')"/>';
-  o+='<path id="rtDone'+id+'" d="'+d+'" fill="none" stroke="#20d3a2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="0 10000"/>';
-  o+='<g><circle cx="'+dest[0]+'" cy="'+dest[1]+'" r="18" fill="#2f8bff" opacity=".16"/>'+
-     '<path d="M'+dest[0]+' '+(dest[1]-19)+'a12 12 0 0 0-12 12c0 8.5 12 20 12 20s12-11.5 12-20a12 12 0 0 0-12-12Z" fill="#2f8bff" stroke="#fff" stroke-width="2.5"/>'+
+  o+='<path id="rt'+id+'" d="'+d+'" fill="none" stroke="#2b59ff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" filter="url(#gl'+id+')"/>';
+  o+='<path id="rtDone'+id+'" d="'+d+'" fill="none" stroke="#2b59ff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="0 10000"/>';
+  o+='<g><circle cx="'+dest[0]+'" cy="'+dest[1]+'" r="18" fill="#2b59ff" opacity=".16"/>'+
+     '<path d="M'+dest[0]+' '+(dest[1]-19)+'a12 12 0 0 0-12 12c0 8.5 12 20 12 20s12-11.5 12-20a12 12 0 0 0-12-12Z" fill="#2b59ff" stroke="#fff" stroke-width="2.5"/>'+
      '<circle cx="'+dest[0]+'" cy="'+(dest[1]-7)+'" r="3.8" fill="#fff"/>'+
      '<rect x="'+(dest[0]-52)+'" y="'+(dest[1]-52)+'" width="104" height="23" rx="8" fill="var(--map-road)" stroke="var(--map-road-casing)"/>'+ 
      '<text x="'+dest[0]+'" y="'+(dest[1]-36)+'" font-size="11" font-weight="700" text-anchor="middle" fill="var(--map-label)">Destino</text></g>';
-  o+='<g id="mk'+id+'"><circle r="20" fill="#20d3a2" opacity=".22"><animate attributeName="r" values="14;26;14" dur="2.2s" repeatCount="indefinite"/></circle>'+ 
-     '<circle r="11" fill="#20d3a2" stroke="#fff" stroke-width="3"/></g>';
+  o+='<g id="mk'+id+'"><circle r="20" fill="#2b59ff" opacity=".22"><animate attributeName="r" values="14;26;14" dur="2.2s" repeatCount="indefinite"/></circle>'+ 
+     '<circle r="11" fill="#2b59ff" stroke="#fff" stroke-width="3"/></g>';
   o+='<g opacity=".75"><line x1="26" y1="470" x2="96" y2="470" stroke="var(--map-label)" stroke-width="2"/>'+
      '<line x1="26" y1="465" x2="26" y2="475" stroke="var(--map-label)" stroke-width="2"/>'+
      '<line x1="96" y1="465" x2="96" y2="475" stroke="var(--map-label)" stroke-width="2"/>'+
@@ -167,10 +167,8 @@ function initTrackingMap(orderId,progress){
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
   }).addTo(map);
   const points=window.trackingRoutePoints;
-  window.trackingRemainingLine=window.L.polyline(points,{color:'#24d3b2',weight:5,opacity:.98,lineCap:'round',lineJoin:'round'}).addTo(map);
-  window.trackingDoneLine=window.L.polyline([points[0]],{color:'#20d3a2',weight:5,opacity:1,lineCap:'round',lineJoin:'round'}).addTo(map);
   window.trackingRouteMarker=window.L.circleMarker(points[0],{
-    radius:10,color:'#fff',weight:3,fillColor:'#20d3a2',fillOpacity:1
+    radius:10,color:'#fff',weight:3,fillColor:'#2b59ff',fillOpacity:1
   }).addTo(map).bindTooltip('Profissional',{direction:'top',offset:[0,-8]});
   window.L.marker(points[points.length-1]).addTo(map).bindTooltip('Cliente',{direction:'top',offset:[0,-28]});
   map.fitBounds(window.L.latLngBounds(points),{padding:[42,42]});

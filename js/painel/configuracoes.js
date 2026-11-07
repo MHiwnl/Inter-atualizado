@@ -5,7 +5,7 @@ function dashConfig(){
   '<div class="grid g2" style="grid-template-columns:.4fr 1.6fr;align-items:start">'+
   '<div class="card"><div style="text-align:center">'+
   '<div style="position:relative;width:110px;margin:0 auto">'+avatar(u,110).replace('class="avatar"','class="avatar" style="margin:0 auto;width:110px;height:110px;font-size:40px"')+
-  '<button class="icon-btn" style="position:absolute;bottom:0;right:0;background:var(--brand);border-color:var(--brand)" onclick="document.getElementById(\'fotoIn\').click()">'+ic('camera').replace('class="ic "','class="ic" style="stroke:#fff"')+'</button></div>'+
+  '<button class="icon-btn" aria-label="Trocar foto" style="position:absolute;bottom:0;right:0;background:var(--brand);border-color:var(--brand)" onclick="document.getElementById(\'fotoIn\').click()">'+ic('camera').replace('class="ic "','class="ic" style="stroke:#fff"')+'</button></div>'+
   '<input type="file" id="fotoIn" accept="image/*" class="hide" onchange="trocarFoto(this)">'+
   '<b style="display:block;margin-top:14px">'+esc(u.name)+'</b>'+
   '<span class="muted" style="font-size:.84rem">'+(isPro?(u.service?svc(u.service).n:'Categoria não informada'):'Cliente')+'</span>'+
@@ -14,7 +14,7 @@ function dashConfig(){
   (u.photo?'<button class="btn btn-danger btn-sm btn-block" style="margin-top:8px" onclick="saveUser({photo:null});toast(\'Foto removida\');render()">Remover foto</button>':'')+
   '</div></div>'+
   '<div>'+
-  '<form class="card" onsubmit="salvarPerfil(event)"><h3 style="font-size:1.05rem;margin-bottom:18px">Dados pessoais</h3>'+
+  '<form class="card" onsubmit="salvarPerfil(event)"><h2 class="sub" style="font-size:1.05rem;margin-bottom:18px">Dados pessoais</h2>'+
   '<div class="grid g2" style="gap:0 16px">'+
   '<div class="field"><label>Nome completo</label><input class="input" name="name" value="'+esc(u.name)+'" required></div>'+
   '<div class="field"><label>CPF</label><input class="input" name="cpf" value="'+esc(u.cpf)+'" oninput="this.value=maskCPF(this.value)" required></div>'+
@@ -28,21 +28,18 @@ function dashConfig(){
   (isPro?'<div class="field"><label>Sobre você (aparece no seu perfil público)</label><textarea class="textarea" name="bio">'+esc(u.bio)+'</textarea></div>':'')+
   '<button class="btn btn-grad">'+ic('check')+' Salvar alterações</button></form>'+
 
-  '<div class="card" style="margin-top:20px"><h3 style="font-size:1.05rem;margin-bottom:6px">Segurança</h3>'+
+  '<div class="card" style="margin-top:20px"><h2 class="sub" style="font-size:1.05rem;margin-bottom:6px">Segurança</h2>'+
   '<p class="muted" style="font-size:.88rem;margin-bottom:8px">Proteja o acesso à sua conta.</p>'+
   '<div class="check-row"><div><b style="font-size:.92rem;display:block">Autenticação em duas etapas</b><small class="muted">Este recurso ainda não está disponível.</small></div><span class="tag tag-warn">Indisponível</span></div>'+
-  '<div class="check-row"><div><b style="font-size:.92rem;display:block">Senha</b><small class="muted">Última alteração há 3 meses</small></div>'+
+  '<div class="check-row"><div><b style="font-size:.92rem;display:block">Senha</b><small class="muted">Use uma senha que você não repete em outros sites.</small></div>'+
   '<button class="btn btn-ghost btn-sm" onclick="trocarSenha()">Alterar senha</button></div>'+
   '<div class="check-row"><div><b style="font-size:.92rem;display:block">Sessões ativas</b><small class="muted">Gerenciamento de dispositivos indisponível.</small></div></div></div>'+
 
-  '<div class="card" style="margin-top:20px"><h3 style="font-size:1.05rem;margin-bottom:6px">Notificações</h3>'+
-  '<p class="muted" style="font-size:.88rem;margin-bottom:8px">Escolha como quer ser avisado.</p>'+
-  [['push','Push no aplicativo'],['email','E-mail'],['sms','SMS'],['promo','Promoções e novidades']]
-  .map(n=>'<div class="check-row"><span style="font-size:.92rem;font-weight:600">'+n[1]+'</span>'+
-  '<div class="switch '+(u.notif[n[0]]?'on':'')+'" onclick="toggleNotif(\''+n[0]+'\')"></div></div>').join('')+'</div>'+
+  '<div class="card" style="margin-top:20px"><h2 class="sub" style="font-size:1.05rem;margin-bottom:6px">Notificações</h2>'+
+  '<p class="t2" style="font-size:.88rem">Hoje os avisos aparecem só dentro do aplicativo. E-mail, push e SMS ainda não existem, então ainda não há o que escolher aqui.</p></div>'+
 
-  '<div class="card" style="margin-top:20px;border-color:color-mix(in srgb,var(--danger) 36%,var(--line))">'+
-  '<h3 style="font-size:1.05rem;margin-bottom:6px;color:var(--danger)">Zona de risco</h3>'+
+  '<div class="card" style="margin-top:20px;border-top-color:var(--danger)">'+
+  '<h2 class="sub" style="font-size:1.05rem;margin-bottom:6px;color:var(--danger-text)">Zona de risco</h2>'+
   '<p class="muted" style="font-size:.88rem;margin-bottom:14px">Ações irreversíveis. Tenha certeza antes de continuar.</p>'+
   '<div style="display:flex;gap:10px;flex-wrap:wrap">'+
   (DEMO_MODE?'<button class="btn btn-ghost" onclick="Store.reset();location.reload()">Restaurar dados demo</button>':'')+
@@ -86,7 +83,7 @@ async function salvarSenha(){
   catch(erro){toast(erro.message||'Não foi possível alterar a senha.','err');}
 }
 function excluirConta(){
-  openModal('<div class="modal-head"><div><h3 style="color:var(--danger)">Excluir conta</h3><p>Todos os seus dados, pedidos e saldo serão perdidos.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
+  openModal('<div class="modal-head"><div><h3 style="color:var(--danger-text)">Excluir conta</h3><p>Todos os seus dados, pedidos e saldo serão perdidos.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
   '<div class="field"><label>Digite <b>EXCLUIR</b> para confirmar</label><input class="input" id="delConf" placeholder="EXCLUIR"></div>'+
   '<div class="field"><label>Senha atual</label><input class="input" id="delPassword" type="password" autocomplete="current-password"></div>'+ 
   '<button class="btn btn-danger btn-block" id="btnConfirmarExclusao" onclick="confirmarExclusao()">Excluir permanentemente</button>');

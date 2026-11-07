@@ -13,7 +13,7 @@ const AGENDA_DEMO=[
 ];
 function agendaEventos(){
   const hoje=new Date();hoje.setHours(0,0,0,0);
-  const evts=AGENDA_DEMO.map(e=>({d:e[0],h:e[1],t:e[2],b:e[3],st:e[4],v:e[5],id:null}));
+  const evts=(DEMO_MODE?AGENDA_DEMO:[]).map(e=>({d:e[0],h:e[1],t:e[2],b:e[3],st:e[4],v:e[5],id:null}));
   myOrders().forEach(o=>{
     if(!o.sched)return;
     const di=Math.floor((o.sched-hoje.getTime())/864e5);
@@ -32,22 +32,23 @@ function dashAgenda(){
   const doDia=evts.filter(e=>e.d===agendaDia);
   const sel=dias[agendaDia];
   const total=doDia.reduce((a,b)=>a+(b.v||0),0);
-  return dashHead('Agenda','Toque em um dia para ver os atendimentos.','<button class="btn btn-ghost" onclick="bloquearHorario()">'+ic('plus')+' Bloquear horário</button>')+
+  return dashHead('Agenda','Toque em um dia para ver os atendimentos.',DEMO_MODE?'<button class="btn btn-ghost" onclick="bloquearHorario()">'+ic('plus')+' Bloquear horário</button>':'')+
+  (DEMO_MODE?'':'<p class="painel-aviso"><b>Parcial:</b> a agenda mostra só atendimentos agendados nos seus pedidos. Bloquear horários ainda não está disponível.</p>')+
   '<div style="margin-bottom:22px"><div class="grid agenda-dias">'+
   dias.map((d,i)=>{const q=evts.filter(e=>e.d===i).length;
-    return '<div class="card center dia '+(i===agendaDia?'sel':'')+'" style="padding:14px 8px" onclick="agendaDia='+i+';render()">'+
-    '<span class="muted" style="font-size:.72rem;text-transform:uppercase">'+(i===0?'HOJE':d.toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','').toUpperCase())+'</span>'+
-    '<div style="font-size:1.3rem;font-weight:800;margin:4px 0">'+d.getDate()+'</div>'+
-    '<span class="tag '+(q?'tag-info':'tag-muted')+'">'+q+'</span></div>';}).join('')+'</div></div>'+
+    return '<button type="button" data-fk="dia-'+i+'" aria-pressed="'+(i===agendaDia)+'" class="dia '+(i===agendaDia?'sel':'')+'" onclick="agendaDia='+i+';render()">'+
+    '<span class="muted" style="display:block;font-size:.72rem">'+(i===0?'HOJE':d.toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','').toUpperCase())+'</span>'+
+    '<div style="font-family:var(--font-mono);font-size:1.3rem;font-weight:600;margin:4px 0">'+d.getDate()+'</div>'+
+    '<span class="tag '+(q?'tag-info':'tag-muted')+'">'+q+'</span></button>';}).join('')+'</div></div>'+
   '<div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px">'+
-  '<h3 style="font-size:1.05rem;text-transform:capitalize">'+sel.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'})+'</h3>'+
+  '<h2 class="sub" >'+sel.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'})+'</h2>'+
   (doDia.length?'<span class="pill">'+ic('wallet')+' Previsto: '+money(total)+' · '+doDia.length+' atendimento'+(doDia.length>1?'s':'')+'</span>':'')+'</div>'+
   (doDia.length?doDia.map(e=>'<div class="rowitem"'+(e.id?' style="cursor:pointer" onclick="go(\'/painel/pedido/'+e.id+'\')"':'')+'>'+
   '<div style="text-align:center;flex:none;width:58px"><b style="font-size:.95rem">'+e.h+'</b>'+
   '<small class="muted" style="display:block">'+sel.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+'</small></div>'+
   '<div class="grow" style="border-left:1px solid var(--line);padding-left:14px"><b>'+esc(e.t)+'</b><small>'+ic('mapPin')+' '+esc(e.b||'—')+(e.v?' · '+money(e.v):'')+'</small></div>'+
   '<span class="tag '+(e.st==='confirmado'?'tag-ok':'tag-warn')+'">'+e.st+'</span></div>').join('')
-  :'<div class="card emptystate">'+ic('cal')+'<b>Nenhum atendimento neste dia</b><p style="margin-top:6px">Dia livre. Você pode ficar disponível para receber novos pedidos.</p>'+
+  :'<div class="card emptystate">'+ic('cal')+'<b>Nenhum atendimento neste dia</b><p style="margin-top:6px">Veja se há pedidos da sua categoria aguardando aceite.</p>'+
    '<a class="btn btn-primary" style="margin-top:16px" href="#/painel/oportunidades">Ver oportunidades</a></div>');
 }
 function bloquearHorario(){

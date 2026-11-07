@@ -3,7 +3,7 @@ let filtroPedidos='todos';
 function dashPedidos(){
   const os=myOrders().filter(o=>filtroPedidos==='todos'?true:filtroPedidos==='ativos'?['a_caminho','chegou','em_andamento','agendado','aguardando'].includes(o.status):o.status===filtroPedidos);
   const isPro=me().role==='profissional';
-  return dashHead(isPro?'Meus atendimentos':'Meus pedidos',isPro?'Todos os serviços que você executou ou vai executar.':'Histórico completo e acompanhamento em tempo real.',
+  return dashHead(isPro?'Meus atendimentos':'Meus pedidos',isPro?'Todos os serviços que você executou ou vai executar.':'Seus pedidos e a etapa de cada um.',
     isPro?'<a class="btn btn-grad" href="#/painel/oportunidades">'+ic('target')+' Ver oportunidades</a>':'<a class="btn btn-grad" href="#/contratar">'+ic('plus')+' Novo pedido</a>')+
   '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">'+
   [['todos','Todos'],['ativos','Ativos'],['concluido','Concluídos'],['cancelado','Cancelados']]

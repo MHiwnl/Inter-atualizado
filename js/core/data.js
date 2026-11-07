@@ -13,7 +13,7 @@ const SERVICES=[
   {id:'frete',n:'Frete & Mudança',ico:'truck',d:'Carretos, mudanças residenciais, içamento e transporte rápido.',min:120,max:1600,unit:'viagem',cat:'Transporte'},
   {id:'dedetiza',n:'Dedetização',ico:'bug',d:'Controle de pragas, cupim, desratização e sanitização.',min:160,max:820,unit:'imóvel',cat:'Saúde'},
   {id:'ti',n:'Informática & Redes',ico:'laptop',d:'Formatação, redes Wi-Fi, CFTV, suporte técnico e cabeamento.',min:90,max:640,unit:'atendimento',cat:'Técnico'},
-  {id:'cftv',n:'Câmeras & Segurança',ico:'camera',d:'Instalação e configuração de câmeras. Equipamentos cobrados à parte.',min:100,max:300,unit:'câmera',cat:'Segurança'}
+  {id:'cftv',n:'Câmeras & Segurança',ico:'camera',d:'Instalação e configuração de câmeras.',min:100,max:300,unit:'câmera',cat:'Segurança'}
 ];
 const svc=id=>SERVICES.find(s=>s.id===id)||SERVICES[0];
 
@@ -48,8 +48,8 @@ function buildPros(){
     id:'pro'+i,name:p[0],service:p[1],rating:p[2],reviews:p[3],city:p[4],
     price:rand(service.min,service.max),dist:+(Math.random()*8+.4).toFixed(1),eta:rand(12,55),
     verified:Math.random()>.2,jobs:rand(60,900),since:rand(2018,2024),
-    bio:'Profissional autônomo com experiência comprovada em '+svc(p[1]).n.toLowerCase()+'. Atendimento com garantia TaskGO de 90 dias.',
-    skills:['Orçamento grátis','Garantia 90 dias','Aceita PIX','Nota fiscal'].slice(0,rand(2,4))
+    bio:'Perfil fictício do modo demonstração: '+svc(p[1]).n.toLowerCase()+'.',
+    skills:['Orçamento grátis','Atende aos sábados','Leva as ferramentas','Atende em Recife'].slice(0,rand(2,4))
     };
   });
 }

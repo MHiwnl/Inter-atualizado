@@ -2,10 +2,9 @@
 const API_PEDIDOS_OPORTUNIDADES=API_BASE_URL+'/api/pedidos/contratados';
 let paginaOportunidades=0;
 function dashOportunidades(){
-  return dashHead('Oportunidades','Pedidos persistidos aguardando aceite.',
-    '<span class="pill">Distância e disponibilidade não cadastradas</span>')+
-    '<div class="card" style="margin-bottom:20px"><b>Profissionais cadastrados</b><p class="muted" style="font-size:.88rem;margin-top:6px">Aceitar uma oportunidade vincula o pedido à sua conta no servidor.</p></div>'+
-    '<div id="mural-pedidos" aria-live="polite"><div class="card center" style="padding:30px"><div class="radar">'+ic('target')+'</div><b>Carregando pedidos...</b></div></div>';
+  return dashHead('Oportunidades','Pedidos da sua categoria aguardando aceite. O endereço só aparece depois de aceitar.')+
+    '<p class="painel-aviso"><b>Parcial:</b> distância e disponibilidade ainda não são consideradas. Ao aceitar, o pedido fica vinculado à sua conta.</p>'+
+    '<div id="mural-pedidos" aria-live="polite"><div class="card center"><b>Carregando pedidos...</b></div></div>';
 }
 function carregarPedidos(){
   const container=document.getElementById('mural-pedidos');
@@ -17,7 +16,7 @@ function carregarPedidos(){
     .then(resultado=>{
       container.innerHTML='';
       const pedidos=resultado&&Array.isArray(resultado.content)?resultado.content:[];
-      if(!Array.isArray(pedidos)||!pedidos.length){container.innerHTML='<div class="card center"><p class="muted">Não há pedidos disponíveis para sua categoria no momento.</p></div>';return;}
+      if(!Array.isArray(pedidos)||!pedidos.length){container.innerHTML='<div class="card emptystate">'+ic('target')+'<b>Nenhum pedido por enquanto</b><p style="margin-top:6px">Quando um cliente pedir um serviço da sua categoria, ele aparece aqui.</p></div>';return;}
       pedidos.forEach(pedido=>{
         if(!pedido.id)return;
         const servico=SERVICES.find(item=>item.id===pedido.service);

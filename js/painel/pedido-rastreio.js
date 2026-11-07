@@ -12,46 +12,44 @@ function dashPedido(id){
   const curIdx=Math.max(0,stepsArr.indexOf(o.status));
   const live=o.status==='a_caminho';
   return '<a href="#/painel/pedidos" class="pill" style="margin-bottom:18px">'+ic('arrowLeft')+' Meus pedidos</a>'+
-  dashHead(s.n,'Pedido #'+o.id.slice(-6).toUpperCase()+' · criado em '+dt(o.created),stTag(o.status))+
+  dashHead(s.n,'Criado em '+dt(o.created),stTag(o.status))+
   '<div class="grid g2" style="grid-template-columns:1.35fr .65fr;align-items:start">'+
   '<div>'+
-    (!['cancelado','aguardando'].includes(o.status)?'<div class="card" style="padding:18px">'+
-      (live?'<div class="map tracking-map"><div id="mapa-rastreio" class="leaflet-tracking-map" role="application" aria-label="Última posição GPS recebida do profissional"><div class="card center muted" style="padding:40px">Aguardando uma posição GPS do profissional.</div></div></div>'+ 
-      '<div id="gps-status" class="muted" style="margin:12px 2px;font-size:.88rem">Aguardando atualização de localização. Nenhuma rota ou previsão de chegada disponível.</div>'+ 
-      (isPro?'<button class="btn btn-grad btn-sm" onclick="iniciarCompartilhamentoGPS(\''+o.id+'\')">Compartilhar minha localização neste pedido</button><button class="btn btn-ghost btn-sm" style="margin-left:8px" onclick="pararCompartilhamentoPedido(\''+o.id+'\')">Parar compartilhamento</button><button class="btn btn-ghost btn-sm" style="margin-left:8px" onclick="informarChegada(\''+o.id+'\')">Informar que cheguei</button>':''):
-      '<div class="card center muted" style="padding:18px">'+(o.status==='chegou'?'Chegada informada pelo profissional. O compartilhamento de GPS foi encerrado.':o.status==='concluido'?'Serviço concluído. O compartilhamento de GPS foi encerrado.':o.status==='cancelado'?'Pedido cancelado. O compartilhamento de GPS foi encerrado.':'Rastreamento disponível quando o profissional estiver a caminho.')+'</div>')+ 
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin:14px 2px 0;font-size:.85rem"><span class="muted">'+(isPro?'Localização compartilhada com o cliente':'Última posição compartilhada pelo profissional')+'</span>'+ 
+    (!['cancelado','aguardando'].includes(o.status)?'<div class="card">'+
+      (live?'<div class="map tracking-map"><div id="mapa-rastreio" class="leaflet-tracking-map" role="application" aria-label="Última posição GPS recebida do profissional"><div class="center muted" style="padding:40px">Aguardando uma posição GPS do profissional.</div></div></div>'+ 
+      '<div id="gps-status" class="muted" style="margin:12px 2px;font-size:.88rem">'+(DEMO_MODE?'Posição simulada do modo demonstração. O app não calcula rota nem previsão de chegada.':'Aguardando atualização de localização. Nenhuma rota ou previsão de chegada disponível.')+'</div>'+ 
+      (isPro?'<div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn btn-grad btn-sm" onclick="iniciarCompartilhamentoGPS(\''+o.id+'\')">Compartilhar minha localização neste pedido</button><button class="btn btn-ghost btn-sm" onclick="pararCompartilhamentoPedido(\''+o.id+'\')">Parar compartilhamento</button><button class="btn btn-ghost btn-sm" onclick="informarChegada(\''+o.id+'\')">Informar que cheguei</button></div>':''):
+      '<div class="center muted" style="padding:18px 0">'+(o.status==='chegou'?'Chegada informada pelo profissional. O compartilhamento de GPS foi encerrado.':o.status==='concluido'?'Serviço concluído. O compartilhamento de GPS foi encerrado.':o.status==='cancelado'?'Pedido cancelado. O compartilhamento de GPS foi encerrado.':'Rastreamento disponível quando o profissional estiver a caminho.')+'</div>')+ 
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin:14px 2px 0;font-size:.85rem"><span class="muted">'+(live?(isPro?'Localização compartilhada com o cliente':'Última posição compartilhada pelo profissional'):'Endereço do atendimento')+'</span>'+ 
       '<span class="muted">'+esc(o.address||'')+'</span></div>'+ 
       '<div class="track-steps">'+['Aguardando aceite','A caminho','Chegou','Em andamento','Concluído'].map((t,i)=>'<div class="tstep '+(i<curIdx?'done':i===curIdx?'now':'')+'">'+t+'</div>').join('')+'</div>'+ 
       '<div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">'+
       '<a class="btn btn-ghost btn-sm" href="#/painel/mensagens">'+ic('chat')+' Mensagem</a>'+
-      '<button class="btn btn-ghost btn-sm" onclick="toast(\'Ligando para '+esc(cp.name)+'...\')">'+ic('phone')+' Ligar</button>'+
-      '<button class="btn btn-ghost btn-sm" onclick="compartilharRota()">'+ic('nav')+' Compartilhar rota</button>'+
-      '<button class="btn btn-danger btn-sm" onclick="emergencia()">'+ic('flag')+' Emergência</button></div>'+
+      '<button class="btn btn-danger btn-sm" onclick="emergencia()">'+ic('phone')+' Ligar para 190 ou 192</button></div>'+
     '</div>':'')+
     /* CÓDIGO */
     (['a_caminho','chegou'].includes(o.status)?(isPro
      /* PROFISSIONAL: digita o código que o cliente informa */
-     ?(o.status==='chegou'?'<div class="card" style="margin-top:20px;text-align:center;border-color:color-mix(in srgb,var(--brand) 40%,var(--line))">'+
+     ?(o.status==='chegou'?'<div class="card" style="margin-top:20px;text-align:center;border-top-color:var(--brand)">'+
       '<div class="ico-box" style="margin:0 auto 12px">'+ic('key')+'</div>'+
-      '<h3 style="font-size:1.05rem">Validação de chegada</h3>'+
+      '<h2 class="sub" style="font-size:1.05rem">Validação de chegada</h2>'+
       '<p class="muted" style="font-size:.88rem;margin-top:6px;max-width:440px;margin-inline:auto">Ao chegar, peça ao cliente o código de 4 dígitos que aparece no aplicativo dele e digite abaixo. O serviço só começa depois disso.</p>'+
       '<div class="code-boxes">'+[0,1,2,3].map(i=>'<input id="cb'+i+'" inputmode="numeric" maxlength="1" oninput="cbNext('+i+')">').join('')+'</div>'+
       '<button class="btn btn-grad" onclick="validarCodigo(\''+o.id+'\')">'+ic('checkCircle')+' Validar e iniciar serviço</button>'+
       '</div>':'<div class="card" style="margin-top:20px"><b>Aguardando chegada</b><p class="muted">O código só pode ser informado depois que o profissional registrar a chegada no pedido.</p></div>')
      /* CLIENTE: mostra o código para informar ao profissional */
-     :'<div class="card" style="margin-top:20px;text-align:center;border-color:color-mix(in srgb,var(--brand) 40%,var(--line))">'+
+     :'<div class="card" style="margin-top:20px;text-align:center;border-top-color:var(--brand)">'+
       '<div class="ico-box" style="margin:0 auto 12px">'+ic('key')+'</div>'+
-      '<h3 style="font-size:1.05rem">Seu código de segurança</h3>'+
+      '<h2 class="sub" style="font-size:1.05rem">Seu código de segurança</h2>'+
       '<p class="muted" style="font-size:.88rem;margin-top:6px;max-width:440px;margin-inline:auto">Informe este código a '+esc(p.name.split(' ')[0])+' somente quando ele chegar ao local. Ele digita o código no app para iniciar o serviço.</p>'+
       '<div class="big-code" style="margin:20px 0">'+o.code+'</div>'+
       '<span class="pill '+(o.status==='chegou'?'pill-brand':'')+'">'+(o.status==='chegou'?ic('mapPin')+' O profissional chegou — informe o código':ic('clock')+' Aguardando a chegada do profissional')+'</span>'+
       '<details class="demo-note"><summary>Testar a visão do profissional</summary><span class="demo-note-content">Crie ou acesse uma conta profissional para acompanhar o pedido por esse perfil.</span></details></div>'):'')+
     (o.status==='aguardando'?(isPro?
-     '<div class="card" style="margin-top:20px;border-color:color-mix(in srgb,var(--brand) 40%,var(--line))">'+
+     '<div class="card" style="margin-top:20px;border-top-color:var(--brand)">'+
      '<div style="display:flex;gap:14px;align-items:flex-start"><div class="ico-box">'+ic('bell')+'</div><div style="flex:1"><b>Novo pedido recebido</b><p class="muted" style="font-size:.88rem;margin-top:6px">'+esc(cli.name)+' solicitou '+esc(s.n)+' por '+money(o.price)+'. Revise o endereço e confirme se pode atender.</p></div></div>'+ 
      '<div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap"><button class="btn btn-ghost" onclick="recusarPedidoCliente(\''+o.id+'\')">Recusar pedido</button><button class="btn btn-grad" onclick="confirmarPedidoCliente(\''+o.id+'\')">'+ic('check')+' Confirmar atendimento</button></div></div>'
-     :'<div class="card" style="margin-top:20px;border-color:color-mix(in srgb,var(--brand) 35%,var(--line))"><b>Aguardando confirmação do profissional</b><p class="muted" style="font-size:.88rem;margin-top:6px">Seu pedido foi enviado para '+esc(p.name)+'. Avisaremos assim que ele confirmar o atendimento.</p></div>'):'')+
+     :'<div class="card" style="margin-top:20px;border-top-color:var(--brand)"><b>Aguardando confirmação do profissional</b><p class="muted" style="font-size:.88rem;margin-top:6px">Seu pedido foi enviado para '+esc(p.name)+'. Avisaremos assim que ele confirmar o atendimento.</p></div>'):'')+
     (o.status==='em_andamento'?
      '<div class="card" style="margin-top:20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">'+
      '<div class="ico-box">'+ic('play')+'</div><div style="flex:1;min-width:200px"><b>Serviço em andamento</b>'+
@@ -67,7 +65,7 @@ function dashPedido(id){
     (o.notes?'<div class="card" style="margin-top:20px"><b style="font-size:.9rem">Descrição do pedido</b><p class="muted" style="font-size:.9rem;margin-top:8px">'+esc(o.notes)+'</p></div>':'')+
   '</div>'+
   '<div>'+
-    '<div class="card"><h3 style="font-size:1rem;margin-bottom:16px">'+(isPro?'Cliente':'Profissional')+'</h3>'+
+    '<div class="card"><h2 class="sub" style="font-size:1rem;margin-bottom:16px">'+(isPro?'Cliente':'Profissional')+'</h2>'+
     '<div style="display:flex;gap:12px;align-items:center">'+avatar({name:cp.name},52)+
     '<div><b style="display:block">'+esc(cp.name)+'</b><span class="muted" style="font-size:.8rem">'+cpRatingHtml+' · '+
       (isPro?(Number(cli.jobs)||0)+' pedidos na TaskGO':p.reviews+' avaliações')+'</span>'+ 
@@ -76,16 +74,14 @@ function dashPedido(id){
        '<div style="display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)"><span class="muted" style="font-size:.84rem">Telefone</span><b style="font-size:.84rem">'+esc(cli.phone||'—')+'</b></div>'+
        '<div style="display:flex;justify-content:space-between;gap:12px;padding:9px 0"><span class="muted" style="font-size:.84rem">Cliente desde</span><b style="font-size:.84rem">'+new Date(cli.since||Date.now()).toLocaleDateString('pt-BR',{month:'short',year:'numeric'})+'</b></div></div>'
           :'<p class="muted" style="font-size:.86rem;margin-top:14px">'+esc(p.bio)+'</p>')+'</div>'+
-    '<div class="card" style="margin-top:16px"><h3 style="font-size:1rem;margin-bottom:14px">Resumo</h3>'+
-    [['Endereço',o.address||'—'],['Categoria',s.n],['Pagamento',{pix:'PIX',card:'Cartão',wallet:'Carteira TaskGO'}[o.paid]||'PIX'],['Valor',money(o.price)]]
+    '<div class="card" style="margin-top:16px"><h2 class="sub" style="font-size:1rem;margin-bottom:14px">Resumo</h2>'+
+    [['Endereço',o.address||'—'],['Categoria',s.n],['Pagamento','Ainda não disponível'],['Valor',money(o.price)]]
     .map(r=>'<div style="display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--line)"><span class="muted" style="font-size:.85rem">'+r[0]+'</span><b style="font-size:.85rem;text-align:right">'+esc(r[1])+'</b></div>').join('')+
-    (isPro?'<div style="display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--line)"><span class="muted" style="font-size:.85rem">Taxa TaskGO ('+(me().plan==='plus'?'8%':'12%')+')</span><b style="font-size:.85rem;color:var(--danger)">− '+money(o.price*(me().plan==='plus'?.08:.12))+'</b></div>':'')+
-    '<div style="display:flex;justify-content:space-between;padding-top:14px"><b>'+(isPro?'Você recebe':'Total')+'</b><b style="font-size:1.2rem;color:var(--brand)">'+money(isPro?o.price*(me().plan==='plus'?.92:.88):o.price)+'</b></div>'+
     (['a_caminho','agendado','aguardando'].includes(o.status)?'<button class="btn btn-danger btn-block" style="margin-top:16px" onclick="cancelarPedido(\''+o.id+'\')">Cancelar pedido</button>':'')+
     '</div>'+
-    '<div class="card" style="margin-top:16px;background:color-mix(in srgb,var(--accent) 8%,var(--surface))">'+
-    '<div style="display:flex;gap:10px"><div style="flex:none">'+ic(isPro?'key':'shield')+'</div><div><b style="font-size:.88rem">'+(isPro?'Antes de iniciar':'Garantia TaskGO')+'</b>'+
-    '<p class="muted" style="font-size:.84rem;margin-top:4px">'+(isPro?'Peça o código de 4 dígitos ao cliente e valide no app. Só depois inicie o serviço.':'90 dias de cobertura sobre o serviço executado.')+'</p></div></div></div>'+
+    '<div class="card" style="margin-top:16px">'+
+    '<div style="display:flex;gap:10px"><div style="flex:none">'+ic(isPro?'key':'shield')+'</div><div><b style="font-size:.88rem">'+(isPro?'Antes de iniciar':'Sem garantia por enquanto')+'</b>'+
+    '<p class="muted" style="font-size:.84rem;margin-top:4px">'+(isPro?'Peça o código de 4 dígitos ao cliente e valide no app. Só depois inicie o serviço.':'A TaskGO ainda não oferece garantia nem cobertura de danos.')+'</p></div></div></div>'+
   '</div></div>';
 }
 function startTracking(){
@@ -162,8 +158,8 @@ function renderGpsPosition(position){
   if(window.taskgoGpsMap&&window.taskgoGpsMapNode!==mapNode){window.taskgoGpsMap.remove();window.taskgoGpsMap=null;window.taskgoGpsMarker=null;window.taskgoGpsAccuracy=null;}
   if(!window.taskgoGpsMap){
     mapNode.replaceChildren();const map=L.map(mapNode,{scrollWheelZoom:false,doubleClickZoom:false});
-    window.taskgoGpsMap=map;window.taskgoGpsMapNode=mapNode;window.taskgoGpsMarker=L.circleMarker([position.latitude,position.longitude],{radius:9,color:'#fff',weight:3,fillColor:'#3288ff',fillOpacity:.95}).addTo(map);
-    window.taskgoGpsAccuracy=L.circle([position.latitude,position.longitude],{radius:Math.max(1,Number(position.accuracy)),color:'#3288ff',weight:1,fillOpacity:.12}).addTo(map);
+    window.taskgoGpsMap=map;window.taskgoGpsMapNode=mapNode;window.taskgoGpsMarker=L.circleMarker([position.latitude,position.longitude],{radius:9,color:'#fff',weight:3,fillColor:'#2b59ff',fillOpacity:.95}).addTo(map);
+    window.taskgoGpsAccuracy=L.circle([position.latitude,position.longitude],{radius:Math.max(1,Number(position.accuracy)),color:'#2b59ff',weight:1,fillOpacity:.12}).addTo(map);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'}).addTo(map);
     map.setView([position.latitude,position.longitude],16);
   }else{
@@ -259,7 +255,7 @@ async function salvarAvaliacao(id){
 function cancelarPedido(id){
   openModal('<div class="modal-head"><div><h3>Cancelar pedido</h3><p>Essa ação não pode ser desfeita.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
   '<div class="field"><label>Motivo do cancelamento</label><select class="select" id="cmot"><option>Resolvi o problema sozinho</option><option>Encontrei outro profissional</option><option>O valor ficou acima do esperado</option><option>Demora no atendimento</option><option>Outro motivo</option></select></div>'+
-  '<div style="padding:13px;border-radius:12px;background:color-mix(in srgb,var(--warn) 12%,transparent);font-size:.85rem;margin-bottom:18px">Cancelamentos após o início do deslocamento podem gerar taxa de compensação ao profissional.</div>'+
+  '<p class="aviso-linha" style="margin-bottom:18px">Ao cancelar, o pedido deixa de valer para as duas pessoas. A plataforma não cobra taxa, porque ainda não há pagamento.</p>'+
   '<div style="display:flex;gap:10px"><button class="btn btn-ghost btn-block" onclick="closeModal()">Voltar</button>'+
   '<button class="btn btn-danger btn-block" onclick="confirmarCancel(\''+id+'\')">Cancelar pedido</button></div>');
 }
@@ -268,20 +264,12 @@ async function confirmarCancel(id){
   try{await guardarPedidoAlterado(o,{status:'cancelado',cancelReason:(($('#cmot')||{}).value||o.cancelReason||'')});closeModal();toast('Pedido cancelado.','ok');render();}
   catch(error){toast(error.message||'O servidor não confirmou o cancelamento.','err');}
 }
-function compartilharRota(){
-  openModal('<div class="modal-head"><div><h3>Compartilhar acompanhamento</h3><p>Envie o link do rastreio para alguém de confiança.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
-  '<div class="copy-box" id="shareLink">https://taskgo.com.br/track/'+uid().toUpperCase()+'</div>'+
-  '<button class="btn btn-soft btn-block" style="margin-top:14px" onclick="copiar(document.getElementById(\'shareLink\').textContent)">'+ic('copy')+' Copiar link</button>'+
-  '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">'+
-  '<button class="btn btn-ghost" onclick="toast(\'Abrindo WhatsApp...\')">WhatsApp</button>'+
-  '<button class="btn btn-ghost" onclick="toast(\'Abrindo SMS...\')">SMS</button></div>');
-}
+/* A TaskGO não tem equipe de plantão: o modal leva direto aos serviços públicos. */
 function emergencia(){
-  openModal('<div class="modal-head"><div><h3 style="color:var(--danger)">Acionar emergência</h3><p>Nosso time de segurança será notificado imediatamente.</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
+  openModal('<div class="modal-head"><div><h3 style="color:var(--danger-text)">Emergência</h3><p>A TaskGO ainda não tem equipe de segurança de plantão. Procure ajuda direto:</p></div><button class="icon-btn" aria-label="Fechar" onclick="closeModal()">'+ic('x')+'</button></div>'+
   '<div style="display:flex;flex-direction:column;gap:10px">'+
-  '<button class="btn btn-danger btn-block" onclick="closeModal();toast(\'Time de segurança acionado. Aguarde o contato.\',\'ok\')">'+ic('flag')+' Falar com segurança TaskGO</button>'+
-  '<button class="btn btn-ghost btn-block" onclick="closeModal();toast(\'Ligando para 190...\')">'+ic('phone')+' Ligar para a Polícia (190)</button>'+
-  '<button class="btn btn-ghost btn-block" onclick="closeModal();compartilharRota()">'+ic('nav')+' Compartilhar minha localização</button></div>');
+  '<a class="btn btn-danger btn-block" href="tel:190">'+ic('phone')+' Ligar para a Polícia Militar (190)</a>'+
+  '<a class="btn btn-danger btn-block" href="tel:192">'+ic('phone')+' Ligar para o SAMU (192)</a></div>');
 }
-function baixarRecibo(id){toast('Recibo gerado e enviado para o seu e-mail','ok');}
+function baixarRecibo(id){toast('Recibos ainda não estão disponíveis: não há pagamento pela plataforma.','err');}
 

@@ -14,13 +14,13 @@ function stTag(s){const x=ST[s]||['—','tag-muted'];return '<span class="tag '+
 const MENU_CLI=[
   ['g','Principal'],['','Visão geral','grid'],['pedidos','Meus pedidos','list'],['carteira','Carteira','wallet'],
   ['g','Atividade'],['mensagens','Mensagens','chat'],['avaliacoes','Avaliações','star'],['notificacoes','Notificações','bell'],
-  ['g','Conta'],['indicacoes','Indique e ganhe','gift'],['plano','Meu plano','crown'],['config','Configurações','cog']
+  ['g','Conta'],['plano','Meu plano','crown'],['config','Configurações','cog']
 ];
 const MENU_PRO=[
   ['g','Principal'],['','Visão geral','grid'],['oportunidades','Oportunidades','target'],['pedidos','Meus atendimentos','list'],['agenda','Agenda','cal'],
   ['g','Financeiro'],['carteira','Carteira & Ganhos','wallet'],['desempenho','Desempenho','trendUp'],
   ['g','Atividade'],['mensagens','Mensagens','chat'],['avaliacoes','Avaliações','star'],['notificacoes','Notificações','bell'],
-  ['g','Conta'],['indicacoes','Indique e ganhe','gift'],['plano','Meu plano','crown'],['config','Configurações','cog']
+  ['g','Conta'],['plano','Meu plano','crown'],['config','Configurações','cog']
 ];
 function pageDash(){
   const u=me();
@@ -28,12 +28,12 @@ function pageDash(){
   const isPro=u.role==='profissional';
   const menu=isPro?MENU_PRO:MENU_CLI;
   const unread=myNotifs().filter(n=>!n.read).length;
-  const side='<aside class="side">'+
+  const side='<aside class="side"><nav class="side-nav" aria-label="Menu do painel">'+
     '<div class="side-user">'+avatar(u,42)+'<div style="min-width:0"><b>'+esc(u.name)+'</b><span>'+(isPro?'Profissional':'Cliente')+(u.plan==='plus'?' · Plus':'')+'</span></div></div>'+
     menu.map(m=>m[0]==='g'?'<div class="side-group">'+m[1]+'</div>':
-      '<a href="#/painel'+(m[0]?'/'+m[0]:'')+'" class="'+(route.sub===m[0]?'active':'')+'">'+ic(m[2])+'<span>'+m[1]+'</span>'+(m[0]==='notificacoes'&&unread?'<span class="badge">'+unread+'</span>':'')+'</a>').join('')+
+      '<a href="#/painel'+(m[0]?'/'+m[0]:'')+'" class="'+(route.sub===m[0]?'active':'')+'"'+(route.sub===m[0]?' aria-current="page"':'')+'>'+ic(m[2])+'<span>'+m[1]+'</span>'+(m[0]==='notificacoes'&&unread?'<span class="badge">'+unread+'</span>':'')+'</a>').join('')+
     '<div class="side-group">Sair</div><a href="javascript:void(0)" onclick="logout()">'+ic('logout')+'<span>Encerrar sessão</span></a>'+
-  '</aside>';
+  '</nav></aside>';
   let content='';
   const sub=route.sub;
   if(sub==='pedido')content=dashPedido(route.id);
@@ -49,10 +49,10 @@ function pageDash(){
   else if(sub==='desempenho')content=dashDesempenho();
   else if(sub==='oportunidades')content=dashOportunidades();
   else content=dashVisao();
-  return '<div class="dash">'+side+'<main class="dash-main">'+dashTools()+content+'</main></div>';
+  return '<div class="dash">'+side+'<main class="dash-main" id="conteudo" tabindex="-1">'+dashTools()+content+'</main></div>';
 }
 function dashHead(t,s,actions){
-  return '<div class="dash-head"><div><h2>'+t+'</h2><p>'+s+'</p></div><div style="display:flex;gap:10px;flex-wrap:wrap">'+(actions||'')+'</div></div>';
+  return '<div class="dash-head"><div><h1>'+t+'</h1><p>'+s+'</p></div><div style="display:flex;gap:10px;flex-wrap:wrap">'+(actions||'')+'</div></div>';
 }
 function myOrders(){
   const u=me();if(!u)return[];

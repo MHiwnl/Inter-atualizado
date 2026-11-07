@@ -7,11 +7,11 @@ function pageEntrar(){
   if(me()){go('/painel');return '';}
   const isLogin=A.mode==='login';
   return '<div class="auth-wrap">'+
-  '<div class="auth-side"><a href="#/home" class="logo"><span class="lt">Task<b>GO</b></span></a>'+
-  '<p class="lp-auth-slogan">O profissional certo, no momento certo, com segurança.</p>'+
-  '<ul class="lp-status-list">'+[
-    ['parcial','Pedido, aceite, conversa e acompanhamento no mesmo lugar'],
-    ['parcial','Código de chegada para confirmar o início do serviço'],
+  '<div class="auth-side">'+
+  '<p class="lp-auth-slogan">Crie sua conta e ajude a definir como a TaskGO vai funcionar.</p>'+
+  '<ul class="estado-lista">'+[
+    ['espera','Pedido, aceite, conversa e acompanhamento no mesmo lugar'],
+    ['espera','Código de chegada para confirmar o início do serviço'],
     ['parcial','Referência de preço por categoria, sem IA'],
     ['plan','Pagamento e saque pela plataforma']
   ].map(t=>'<li>'+statusTag(t[0])+'<span>'+t[1]+'</span></li>').join('')+'</ul>'+
@@ -21,14 +21,14 @@ function pageEntrar(){
   '<p class="muted lp-auth-sub">'+(isLogin?'Acesse seu painel TaskGO.':'Leva menos de 1 minuto e é grátis.')+'</p>'+
   '<div class="tabs"><button data-fk="aba-entrar" aria-pressed="'+isLogin+'" class="'+(isLogin?'active':'')+'" onclick="A.mode=\'login\';render()">Entrar</button>'+
   '<button data-fk="aba-criar" aria-pressed="'+!isLogin+'" class="'+(!isLogin?'active':'')+'" onclick="A.mode=\'signup\';render()">Criar conta</button></div>'+
-  (!isLogin?'<p class="lp-auth-notice" role="note">A TaskGO ainda está em desenvolvimento. Sua conta serve para conhecer e testar a plataforma: ainda não há pedidos reais nem pagamentos.</p>':'')+
+  (!isLogin?'<p class="aviso-linha" role="note">A TaskGO ainda está em desenvolvimento. Sua conta serve para conhecer e testar a plataforma: ainda não há pedidos reais nem pagamentos.</p>':'')+
   '<form onsubmit="doAuth(event)">'+
   (!isLogin?'<div class="role-pick" role="group" aria-label="Como você quer usar a TaskGO">'+
     '<button type="button" data-fk="papel-cliente" aria-pressed="'+(A.role==='cliente')+'" class="role-opt '+(A.role==='cliente'?'sel':'')+'" onclick="A.role=\'cliente\';render()">'+ic('user')+'<b>Quero contratar</b><span>Sou cliente</span></button>'+
     '<button type="button" data-fk="papel-profissional" aria-pressed="'+(A.role==='profissional')+'" class="role-opt '+(A.role==='profissional'?'sel':'')+'" onclick="A.role=\'profissional\';render()">'+ic('wrench')+'<b>Quero trabalhar</b><span>Sou profissional</span></button>'+
   '</div>'+
   '<div class="field"><label for="auth-name">Nome completo</label><input class="input" id="auth-name" name="name" autocomplete="name" required placeholder="Como no seu documento"></div>'+
-  '<div class="field"><label for="auth-cpf">CPF</label><input class="input" id="auth-cpf" name="cpf" inputmode="numeric" required placeholder="000.000.000-00" oninput="this.value=maskCPF(this.value)"></div>'+
+  '<div class="field"><label for="auth-cpf">CPF</label><input class="input" id="auth-cpf" name="cpf" inputmode="numeric" required placeholder="000.000.000-00" oninput="this.value=maskCPF(this.value)" aria-describedby="auth-cpf-dica"><small class="hint" id="auth-cpf-dica">Hoje o CPF só fica guardado no seu cadastro. Ele ainda não é conferido nem usado em nenhuma verificação.</small></div>'+
   '<div class="field"><label for="auth-phone">Telefone / WhatsApp</label><input class="input" id="auth-phone" name="phone" type="tel" autocomplete="tel" required placeholder="(81) 90000-0000" oninput="this.value=maskPhone(this.value)"></div>'+
   (A.role==='profissional'?'<div class="field"><label for="auth-service">Categoria principal</label><select class="select" id="auth-service" name="service">'+SERVICES.map(s=>'<option value="'+s.id+'">'+s.n+'</option>').join('')+'</select></div>':'')
   :'')+
@@ -57,7 +57,7 @@ async function obterCabecalhosCsrf(){
 }
 function pageRecuperar(){
   const token=route.q.token||'';
-  return '<div class="auth-wrap"><div class="auth-side"><a href="#/home" class="logo"><span class="lt">Task<b>GO</b></span></a><p class="lp-auth-slogan">Recupere o acesso à sua conta</p><p class="muted">Os links são individuais, temporários e podem ser usados uma única vez.</p></div><div class="auth-main"><div class="auth-card"><h1 class="lp-auth-title">'+(token?'Criar nova senha':'Esqueceu sua senha?')+'</h1><p class="muted lp-auth-sub">'+(token?'Escolha uma nova senha para sua conta.':'Informe o e-mail cadastrado. Se a conta existir e o envio estiver configurado, enviaremos instruções.')+'</p>'+
+  return '<div class="auth-wrap"><div class="auth-side"><p class="lp-auth-slogan">Recupere o acesso à sua conta</p><p class="muted">Os links são individuais, temporários e podem ser usados uma única vez.</p></div><div class="auth-main"><div class="auth-card"><h1 class="lp-auth-title">'+(token?'Criar nova senha':'Esqueceu sua senha?')+'</h1><p class="muted lp-auth-sub">'+(token?'Escolha uma nova senha para sua conta.':'Informe o e-mail cadastrado. Se a conta existir e o envio estiver configurado, enviaremos instruções.')+'</p>'+
   (token?'<form onsubmit="redefinirSenha(event)"><div class="field"><label for="nova-senha">Nova senha</label><input class="input" id="nova-senha" name="novaSenha" type="password" required minlength="8" maxlength="128" autocomplete="new-password"></div><div class="field"><label for="confirmar-senha">Confirme a nova senha</label><input class="input" id="confirmar-senha" name="confirmarSenha" type="password" required minlength="8" maxlength="128" autocomplete="new-password"></div><button class="btn btn-grad btn-block" type="submit">Redefinir senha</button></form>'
   :'<form onsubmit="solicitarRecuperacao(event)"><div class="field"><label for="email-recuperacao">E-mail</label><input class="input" id="email-recuperacao" name="email" type="email" maxlength="254" required autocomplete="email" placeholder="voce@email.com"></div><button class="btn btn-grad btn-block" type="submit">Enviar instruções</button></form>')+
   '<p id="recovery-status" role="status" aria-live="polite" class="muted lp-auth-status"></p><a href="#/entrar" class="btn btn-ghost btn-block">Voltar para entrar</a></div></div></div>';

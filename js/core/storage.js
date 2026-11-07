@@ -67,6 +67,8 @@ async function marcarTodasNotificacoesLidas(){
   if(!response.ok)throw new Error('Nao foi possivel atualizar as notificacoes.');
 }
 async function persistirPedido(pedido, email){
+  /* No modo demonstração nada vai para o servidor. */
+  if(typeof DEMO_MODE!=='undefined'&&DEMO_MODE)return pedido;
   const novo=!pedido._persisted;
   const url=novo?API_PEDIDOS:API_PEDIDOS+'/'+encodeURIComponent(pedido.id);
   const resposta=await fetch(url,{method:novo?'POST':'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(pedido)});

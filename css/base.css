@@ -1,72 +1,59 @@
-/* ============ TOKENS ============ */
-:root{
-  --brand:#2f8bff; --brand-2:#5aa7ff; --brand-ink:#0a3f87;
-  --accent:#20d3a2; --warn:#f5a623; --danger:#f04747; --purple:#8b5cf6;
-  --bg:#070b12; --bg-soft:#0b1119; --surface:#0f1725; --surface-2:#141d2e; --surface-3:#1a2436;
-  --line:rgba(255,255,255,.09); --line-strong:rgba(255,255,255,.16);
-  --text:#e9eefb; --text-2:#b8c4da; --muted:#8494ad;
-  --shadow:0 20px 60px -20px rgba(0,0,0,.75);
-  --radius:18px; --radius-sm:12px; --radius-lg:26px;
-  --grad:linear-gradient(135deg,#2f8bff,#5aa7ff 55%,#8b5cf6);
+/* ============ TOKENS ============
+   Site público e login: sempre escuros (data-surface="site").
+   Painel: escuro ou claro (data-surface="app" + data-theme). */
+:root,:root[data-surface="site"]{
+  --brand:#2b59ff; --brand-2:#8aa3ff; --brand-ink:#1a3fd6; --on-brand:#fff;
+  --accent:#35d08f; --warn:#ffb020; --danger:#ff6369;
+  --accent-text:#4be0a0; --warn-text:#ffc04d; --danger-text:#ff7d82;
+  --bg:#000; --bg-soft:#08080a; --surface:#0e0e11; --surface-2:#16161a; --surface-3:#212126;
+  --line:rgba(255,255,255,.17); --line-strong:rgba(255,255,255,.36);
+  --text:#fff; --text-2:#d3d5dc; --muted:#a3a6b1;
+  --focus:#8aa3ff;
   --map-land:#ffffff; --map-bldg:#edf1f6; --map-road:#ffffff; --map-road-casing:#d8e0ea;
   --map-water:#d8edf8; --map-park:#dcebd9; --map-label:#586a82;
-  /* Papéis, sem cor nova: texto sobre o azul da marca e anel de foco. */
-  --on-brand:var(--bg); --focus:var(--brand-2);
-  --maxw:1220px;
+  --font-mono:'Spline Sans Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;
+  --font-text:'Spline Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --maxw:1240px;
   --hdr:72px;
+  color-scheme:dark;
 }
-:root[data-theme="light"]{
-  --bg:#f5f7fb; --bg-soft:#eef2f8; --surface:#ffffff; --surface-2:#f6f8fc; --surface-3:#eef2f8;
-  --line:rgba(12,22,40,.10); --line-strong:rgba(12,22,40,.18);
-  --text:#0b1220; --text-2:#3c4a63; --muted:#697a95;
-  --on-brand:var(--text); --focus:var(--brand-ink);
-  --shadow:0 18px 50px -24px rgba(16,32,64,.35);
-  --map-land:#ffffff; --map-bldg:#edf1f6; --map-road:#ffffff; --map-road-casing:#d8e0ea;
-  --map-water:#d8edf8; --map-park:#dcebd9; --map-label:#586a82;
-}
-@media (prefers-color-scheme: light){
-  :root:not([data-theme="dark"]):not([data-theme="light"]){
-    --bg:#f5f7fb; --bg-soft:#eef2f8; --surface:#ffffff; --surface-2:#f6f8fc; --surface-3:#eef2f8;
-    --line:rgba(12,22,40,.10); --line-strong:rgba(12,22,40,.18);
-    --text:#0b1220; --text-2:#3c4a63; --muted:#697a95;
-    --on-brand:var(--text); --focus:var(--brand-ink);
-    --shadow:0 18px 50px -24px rgba(16,32,64,.35);
-  }
+:root[data-surface="app"][data-theme="light"]{
+  --brand-2:#1a3fd6; --accent-text:#0a7a4b; --warn-text:#8a5a00; --danger-text:#c4262e; --danger:#d9333b; --accent:#10a56a; --warn:#d98a00;
+  --bg:#fff; --bg-soft:#f3f3f5; --surface:#fff; --surface-2:#f3f3f5; --surface-3:#e7e7eb;
+  --line:rgba(0,0,0,.14); --line-strong:rgba(0,0,0,.42);
+  --text:#000; --text-2:#33353d; --muted:#5a5d68;
+  --focus:#1a3fd6;
+  color-scheme:light;
 }
 /* ============ BASE ============ */
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{
-  margin:0;background:var(--bg);color:var(--text);
-  font-family:'Plus Jakarta Sans','Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-  font-size:16px;line-height:1.6;overflow-x:hidden;
-}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-text);font-size:16px;line-height:1.6;overflow-x:hidden}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
 button,input,select,textarea{font:inherit;color:inherit}
-h1,h2,h3,h4{margin:0;line-height:1.14;letter-spacing:-.025em;font-weight:800}
-h1{font-size:clamp(2.1rem,5.2vw,3.9rem)}
-h2{font-size:clamp(1.6rem,3.4vw,2.6rem)}
-h3{font-size:clamp(1.1rem,2vw,1.4rem)}
+h1,h2,h3,h4{margin:0;font-family:var(--font-mono);line-height:1.15;letter-spacing:-.02em;font-weight:600;text-wrap:balance}
+h1{font-size:clamp(1.9rem,4vw,3.4rem)}
+h2{font-size:clamp(1.5rem,3vw,2.4rem)}
+h3{font-size:1.06rem;letter-spacing:-.01em}
 p{margin:0}
-::selection{background:rgba(47,139,255,.35)}
-:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-main:focus{outline:none}
-.skip-link{position:fixed;top:8px;left:8px;z-index:100;padding:10px 16px;border-radius:12px;background:var(--surface);border:1px solid var(--line-strong);color:var(--text);font-weight:600;transform:translateY(calc(-100% - 16px))}
-.skip-link:focus{transform:none}
-@media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  .card-hover,.icon-btn,.btn,.faq-a,.faq-q svg{transition:none}
-  .card-hover:hover,.icon-btn:hover,.btn:hover{transform:none}
-}
+::selection{background:var(--brand);color:#fff}
 .wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 22px}
-.section{padding:clamp(56px,8vw,104px) 0}
 .muted{color:var(--muted)}
 .t2{color:var(--text-2)}
 .center{text-align:center}
-.hide{display:none !important}
-/* scrollbar */
+.hide{display:none!important}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+main:focus{outline:none}
+.skip-link{position:fixed;top:8px;left:8px;z-index:100;padding:10px 16px;background:var(--bg);border:1px solid var(--line-strong);color:var(--text);font-weight:600;transform:translateY(calc(-100% - 16px))}
+.skip-link:focus{transform:none}
+.leitor{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+*{scrollbar-width:thin;scrollbar-color:var(--line-strong) transparent}
 *::-webkit-scrollbar{width:10px;height:10px}
-*::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:20px}
+*::-webkit-scrollbar-thumb{background:var(--line-strong)}
 *::-webkit-scrollbar-track{background:transparent}
-
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}

@@ -56,15 +56,15 @@ A TaskGO aproxima profissionais autônomos e pessoas que precisam de serviços l
 - **Nome:** TaskGO.
 - **Origem:** projeto criado em 2026 por estudantes da UNIBRA, em Recife.
 - **Valores publicados no site:** transparência, segurança, respeito ao trabalho e escuta ativa.
-- **Cores:** o responsável pelo produto decidiu trocar a paleta em um redesign completo (novembro de 2026): preto e um azul intenso próprio da TaskGO. As páginas públicas e o login ficam só no tema escuro; o painel também passa pelo redesign completo, nas visões de cliente e profissional, e mantém o tema claro, para uso na rua. Até o redesign ser aplicado, os valores em uso seguem em `css/base.css`.
+- **Cores:** preto e um azul intenso próprio da TaskGO, definidos pelo responsável pelo produto em um redesign completo (novembro de 2026). As páginas públicas e o login ficam só no tema escuro; o painel também passa pelo redesign completo, nas visões de cliente e profissional, e mantém o tema claro, para uso na rua. Os valores estão em `css/base.css`.
 - **Referência visual:** Instituto Futuros (institutofuturos.com.br), como inspiração de características, sem copiar a identidade dele. O site não pode parecer feito por IA.
 - **Idioma:** português do Brasil.
 
 ## Evidence on Hand
 
 - Dados atuais publicados no site: 0 clientes e 0 profissionais cadastrados.
-- Vídeos em `assets/`. O vídeo `8853466-hd_1920_1080_24fps.mp4` é usado no início do site.
-- Time fundador listado em `js/pages/sobre.js`, ainda sem fotos reais.
+- Vídeos em `assets/`, sem uso no site desde o redesign. A imagem principal do topo é gerada por IA (ChatGPT) e mostra só um objeto; o original está em `assets/photos/principal.jpg`.
+- Time fundador listado em `js/pages/sobre.js`, com fotos reais em `assets/photos/`, recortadas de fotos em grupo.
 
 **Não existe e não pode ser inventado:** clientes, profissionais em atividade, depoimentos, logos de parceiros, avaliações reais, métricas de resultado ou imprensa. Pessoas de banco de imagens não podem representar integrantes do time nem profissionais cadastrados.
 

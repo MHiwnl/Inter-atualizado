@@ -13,7 +13,7 @@ function pageLegal(){
       ['1. Dados coletados','Coletamos dados cadastrais (nome, CPF, e-mail, telefone), dados de localização durante atendimentos ativos e dados de uso da plataforma.'],
       ['2. Finalidade','Usamos os dados para viabilizar a contratação, garantir a segurança das partes, calcular estimativas e cumprir obrigações legais.'],
       ['3. Compartilhamento','Compartilhamos apenas o necessário: dados de contato e endereço com o profissional escolhido, e dados de pagamento com o processador parceiro.'],
-      ['4. Localizacao','Com consentimento do profissional, a ultima posicao e compartilhada durante o status a caminho e apagada quando o rastreamento termina.'],
+      ['4. Localização','Com consentimento do profissional, a última posição é compartilhada durante o status a caminho e apagada quando o rastreamento termina.'],
       ['5. Seus direitos','Conforme a LGPD, você pode solicitar acesso, correção, portabilidade ou exclusão dos seus dados pelo e-mail privacidade@taskgo.com.br.'],
       ['6. Retenção','Mantemos os dados pelo prazo legal necessário e os eliminamos com segurança após esse período.']
     ]],
@@ -27,12 +27,9 @@ function pageLegal(){
     ]]
   };
   const d=docs[route.sub]||docs.termos;
-  return '<section class="section"><div class="wrap" style="max-width:800px">'+
-  '<span class="eyebrow">'+ic('file')+' Documentos legais</span><h2 style="margin:14px 0 8px">'+d[0]+'</h2>'+
-  '<p class="muted" style="margin-bottom:34px">Última atualização: '+new Date().toLocaleDateString('pt-BR')+'</p>'+
-  '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:30px">'+
-  [['termos','Termos'],['privacidade','Privacidade'],['cancelamento','Cancelamento']].map(x=>'<a class="pill '+(route.sub===x[0]||(!route.sub&&x[0]==='termos')?'pill-brand':'')+'" href="#/legal/'+x[0]+'">'+x[1]+'</a>').join('')+'</div>'+
-  d[1].map(s=>'<div style="margin-bottom:26px"><h3 style="font-size:1.05rem;margin-bottom:8px">'+s[0]+'</h3><p class="t2" style="font-size:.95rem">'+s[1]+'</p></div>').join('')+
-  '</div></section>';
+  return folha('documentos','<h1 class="duo"><strong>'+d[0]+'</strong></h1>'+
+  '<p class="t2" style="margin:14px 0 26px;font-size:.88rem">Última atualização: '+new Date().toLocaleDateString('pt-BR')+'</p>'+
+  '<p class="aviso-linha"><b>Minuta.</b> A TaskGO está em desenvolvimento: pagamentos, retenção de valores, taxas, reembolsos e mediação descritos aqui ainda não existem.</p>'+
+  '<div class="filtros">'+[['termos','Termos'],['privacidade','Privacidade'],['cancelamento','Cancelamento']].map(x=>'<a class="pill '+(route.sub===x[0]||(!route.sub&&x[0]==='termos')?'pill-brand':'')+'" href="#/legal/'+x[0]+'">'+x[1]+'</a>').join('')+'</div>'+
+  '<div class="lista-legal corpo">'+d[1].map(x=>'<section><h2>'+x[0]+'</h2><p>'+x[1]+'</p></section>').join('')+'</div>','cabeca');
 }
-

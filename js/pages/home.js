@@ -1,17 +1,22 @@
 /* =========================================================
-   PÁGINAS PÚBLICAS
+   INÍCIO
    ========================================================= */
-/* Quem prefere menos movimento começa com tudo parado; qualquer pessoa pode pausar. */
-const MOVIMENTO={pausado:window.matchMedia('(prefers-reduced-motion: reduce)').matches};
-function botaoMovimento(){
-  return ic(MOVIMENTO.pausado?'play':'pause')+'<span>'+(MOVIMENTO.pausado?'Retomar animações':'Pausar animações')+'</span>';
+/* Foto principal do topo. Sem caminho, o topo mostra o desenho do raio de atendimento.
+   Origem: imagem gerada no ChatGPT (gpt-image), conforme as credenciais C2PA do original em assets/photos/principal.jpg.
+   O arquivo do site é uma versão reduzida do original. */
+const FOTO_PRINCIPAL='assets/photos/site/principal.jpg';
+const FOTO_PRINCIPAL_ALT='Alicate de eletricista com marcas de uso, apoiado sobre cimento.';
+function desenhoRaio(){
+  return '<svg class="hero-desenho" viewBox="0 0 600 600" aria-hidden="true" focusable="false">'+
+    [70,140,210,280].map((r,i)=>'<circle cx="300" cy="300" r="'+r+'"'+(i<3?' class="fino"':'')+'/>').join('')+
+    '<line class="fino" x1="300" y1="0" x2="300" y2="600"/><line class="fino" x1="0" y1="300" x2="600" y2="300"/>'+
+    '<path class="rota" d="M64 452H176V360H300V300"/>'+
+    '<circle class="ponto" cx="300" cy="300" r="7"/><circle class="ponto" cx="64" cy="452" r="7"/>'+
+  '</svg>';
 }
-function alternarMovimento(botao){
-  MOVIMENTO.pausado=!MOVIMENTO.pausado;
-  botao.innerHTML=botaoMovimento();
-  $('.marquee')?.classList.toggle('is-paused',MOVIMENTO.pausado);
-  const video=$('.hero-bg-video');
-  if(video){if(MOVIMENTO.pausado)video.pause();else video.play().catch(()=>{});}
+function heroCampo(){
+  const foto=FOTO_PRINCIPAL?'<img class="hero-foto" src="'+FOTO_PRINCIPAL+'" alt="'+esc(FOTO_PRINCIPAL_ALT)+'">':desenhoRaio();
+  return '<div class="hero-campo">'+foto+'</div>';
 }
 /* Prévia do fluxo do profissional: protótipo com dados fictícios, sem chamar a API. */
 const FLUXO_ETAPAS=[
@@ -23,15 +28,15 @@ const FLUXO_ETAPAS=[
 ];
 let fluxoEtapa=0;
 function fluxoLinhas(){
-  return FLUXO_ETAPAS.map((e,i)=>'<li class="lp-ticket-row'+(i<=fluxoEtapa?' is-done':'')+'"><span class="lp-ticket-k">'+e[0]+'</span><span>'+(i<=fluxoEtapa?e[2]:e[1])+'</span></li>').join('');
+  return FLUXO_ETAPAS.map((e,i)=>'<li class="ticket-linha'+(i<=fluxoEtapa?' feita':'')+'"><span class="ticket-chave">'+e[0]+'</span><span>'+(i<=fluxoEtapa?e[2]:e[1])+'</span></li>').join('');
 }
 function fluxoRotulo(){return fluxoEtapa<FLUXO_ETAPAS.length-1?FLUXO_ETAPAS[fluxoEtapa+1][3]:'Ver de novo';}
 function fluxoProfissional(){
-  return '<div class="lp-ticket"><div class="lp-ticket-head"><b>Pedido de exemplo</b><span class="lp-status">Protótipo</span></div>'+
-  '<ol class="lp-ticket-rows" id="fluxoLinhas">'+fluxoLinhas()+'</ol>'+
-  '<button type="button" class="btn btn-ghost btn-block" id="fluxoBtn" onclick="avancarFluxo()">'+fluxoRotulo()+'</button>'+
-  '<p class="lp-ticket-note">Dados fictícios: mostra como o fluxo foi pensado.</p>'+
-  '<p class="lp-sr" role="status" id="fluxoAviso"></p></div>';
+  return '<div class="ticket"><div class="ticket-topo"><b>Pedido de exemplo</b>'+statusTag('plan','Protótipo')+'</div>'+
+  '<ol class="ticket-linhas" id="fluxoLinhas">'+fluxoLinhas()+'</ol>'+
+  '<button type="button" class="btn btn-primary btn-block" id="fluxoBtn" onclick="avancarFluxo()">'+fluxoRotulo()+'</button>'+
+  '<p class="ticket-nota">Dados fictícios: mostra como o fluxo foi pensado.</p>'+
+  '<p class="leitor" role="status" id="fluxoAviso"></p></div>';
 }
 function avancarFluxo(){
   fluxoEtapa=fluxoEtapa<FLUXO_ETAPAS.length-1?fluxoEtapa+1:0;
@@ -41,100 +46,42 @@ function avancarFluxo(){
   $('#fluxoAviso').textContent=e[0]+': '+e[2];
 }
 function pageHome(){
-  const pop=SERVICES.filter(s=>s.pop).concat(SERVICES.filter(s=>!s.pop)).slice(0,8);
-  const heroVideo='<video class="hero-bg-video"'+(MOVIMENTO.pausado?'':' autoplay')+' muted loop playsinline preload="metadata" aria-hidden="true"><source src="assets/8853466-hd_1920_1080_24fps.mp4" type="video/mp4"></video>';
-  return '<section class="hero"><div class="hero-bg">'+heroVideo+'</div><div class="hero-grid"></div><div class="wrap"><div class="hero-inner">'+
-  '<div><span class="pill pill-brand">'+ic('sparkle')+' Em desenvolvimento</span>'+
-  '<h1>Uma nova forma de conectar <span>clientes e profissionais</span>.</h1>'+
-  '<p class="hero-sub">A TaskGO está construindo uma plataforma para aproximar profissionais autônomos de quem precisa de serviços locais. O projeto está em desenvolvimento, e queremos ouvir quem vai usá-la antes do lançamento.</p>'+
-  '<div class="hero-cta lp-hero-paths"><a class="btn btn-primary btn-lg" href="#/profissionais">Sou profissional '+ic('arrow')+'</a><a class="btn btn-ghost btn-lg" href="#/servicos">Preciso de um serviço</a></div>'+
-  '<button type="button" class="lp-motion" onclick="alternarMovimento(this)">'+botaoMovimento()+'</button></div>'+
+  return '<section class="hero">'+heroCampo()+'<div class="wrap"><div class="hero-texto">'+
+    duo('você escolhe o pedido.','o endereço só aparece depois do aceite.',1)+
+    '<p class="hero-sub">A TaskGO aproxima profissionais autônomos de quem precisa de serviços locais. O projeto está em desenvolvimento, e queremos ouvir quem vai usá-lo antes do lançamento.</p>'+
+    '<div class="setas">'+linkSeta('#/profissionais','Sou profissional',1)+linkSeta('#/servicos','Preciso de um serviço')+'</div>'+
+    '<p class="hero-fase">Em desenvolvimento · Recife</p>'+
   '</div></div></section>'+
 
-  '<div class="marquee'+(MOVIMENTO.pausado?' is-paused':'')+'"><div class="marquee-track">'+
-    [false,true].map(copia=>'<div class="marquee-set"'+(copia?' aria-hidden="true"':'')+'>'+SERVICES.map(s=>'<span class="marquee-item">'+ic(s.ico)+' '+s.n+'</span>').join('')+'</div>').join('')+
-  '</div></div>'+
+  folha('o problema','<p class="manifesto">Hoje, indicação, conversa, combinação de preço e acompanhamento ficam espalhados entre canais diferentes. <strong>A TaskGO reúne tudo em um só fluxo.</strong></p>','folha-densa')+
 
-  /* PROFISSIONAIS */
-  '<section class="section"><div class="wrap"><div class="ribbon lp-flow">'+
-  '<div class="lp-flow-copy"><h2>Você escolhe o pedido. O endereço só aparece depois do aceite.</h2>'+
-  '<p>A TaskGO está sendo feita primeiro para profissionais autônomos. Ainda não há pedidos reais nem pagamentos, e você pode ajudar a definir como isto vai funcionar.</p>'+
-  '<div class="lp-actions lp-actions-start">'+
-  '<a class="btn btn-primary btn-lg" href="#/profissionais">Ver como é para profissionais '+ic('arrow')+'</a>'+
-  '<a class="btn btn-lg lp-btn-line" href="#/contato">Participar da validação</a></div></div>'+
-  fluxoProfissional()+
-  '</div></div></section>'+
+  folha('para profissionais','<div class="fluxo"><div>'+
+    duo('veja um pedido','do começo ao fim',2,'duo-az')+
+    '<p class="corpo">A TaskGO está sendo feita primeiro para profissionais autônomos. Hoje nenhum pedido pode ser enviado. Crie sua conta para conhecer o painel e ajudar a definir como isto vai funcionar.</p>'+
+    '<div class="setas">'+linkSeta('#/entrar?tipo=profissional','Criar conta de profissional',1)+'</div></div>'+
+    fluxoProfissional()+'</div>')+
 
-  /* SERVIÇOS */
-  '<section class="section"><div class="wrap">'+
-  '<div class="sec-head center"><span class="eyebrow">'+ic('grid')+' Ideias de categorias</span><h2>Serviços que queremos reunir na TaskGO</h2>'+
-  '<p>A presença no catálogo não significa que já existam profissionais cadastrados ou disponíveis.</p></div>'+
-  '<div class="grid g4">'+pop.map(s=>svcCard(s)).join('')+'</div>'+
-  '<div class="lp-actions"><a class="btn btn-ghost btn-lg" href="#/servicos">Ver todas as categorias '+ic('arrow')+'</a></div>'+
-  '</div></section>'+
+  folha('categorias',duo('serviços que queremos','reunir na TaskGO')+
+    '<p class="corpo">A presença no catálogo não significa que já existam profissionais cadastrados ou disponíveis.</p>'+
+    '<div class="cats">'+SERVICES.map(s=>'<a href="#/servicos/'+s.id+'">'+ic(s.ico)+'<span>'+s.n+'</span>'+ic('arrow')+'</a>').join('')+'</div>')+
 
-  /* COMO FUNCIONA */
-  '<section class="section"><div class="wrap">'+
-  '<div class="sec-head center"><span class="eyebrow">'+ic('route')+' Como funciona</span><h2>Uma proposta em construção</h2></div>'+
-  '<div class="steps">'+[
-    ['Encontre uma categoria','Explore as áreas de serviço que fazem parte da proposta TaskGO.'],
-    ['Conheça o projeto','Saiba em que etapa estamos e como pretendemos aproximar clientes e profissionais.'],
-    ['Participe da validação','Sua experiência pode ajudar a orientar os próximos passos do projeto.']
-  ].map(s=>'<div class="step"><h3>'+s[0]+'</h3><p>'+s[1]+'</p></div>').join('')+'</div>'+
-  '<div class="lp-actions"><a class="btn btn-primary btn-lg" href="#/servicos">Explorar categorias '+ic('arrow')+'</a></div>'+
-  '</div></section>'+
+  folha('estado atual','<h2 class="zero"><em>0 clientes.</em>0 profissionais.</h2>'+
+    '<p class="corpo" style="margin-top:28px">A TaskGO ainda não está aberta para contratação. Estamos desenvolvendo e validando a plataforma antes do lançamento.</p>'+
+    '<ul class="negativas"><li>Contratação e pagamentos não estão disponíveis.</li><li>Verificação de identidade e garantias ainda não foram implementadas.</li></ul>'+
+    '<div class="setas">'+linkSeta('#/sobre','Conheça o projeto')+'</div>','azul')+
 
-  /* DIFERENCIAIS */
-  '<section class="section"><div class="wrap">'+
-  '<div class="sec-head center"><span class="eyebrow">'+ic('zap2')+' A proposta</span><h2>Uma jornada mais clara para serviços locais</h2>'+
-  '<p>Os recursos abaixo são objetivos do produto, não serviços já disponíveis.</p></div>'+
-  '<div class="grid g3">'+[
-    ['search','Busca por categoria','A proposta é ajudar clientes a encontrar categorias de serviço em um só lugar.'],
-    ['sparkle','Referência de preço','Estamos avaliando como apresentar referências sem confundi-las com propostas de profissionais.'],
-    ['users','Perfis profissionais','Queremos reunir informações que ajudem clientes e profissionais a se conhecerem.'],
-    ['route','Acompanhamento','Organizar as etapas de um atendimento é um objetivo para a evolução do produto.'],
-    ['shield','Segurança','Verificação de identidade, garantias e proteção de pagamento ainda não estão disponíveis.'],
-    ['chat','Comunicação','A comunicação integrada faz parte da proposta e ainda está em desenvolvimento.']
-  ].map(f=>'<div class="card card-hover lp-feature"><div class="ico-box">'+ic(f[0])+'</div><h3>'+f[1]+'</h3><p>'+f[2]+'</p></div>').join('')+'</div>'+
-  '</div></section>'+
+  folha('desafio e proposta',duo('o que queremos','melhorar com a TaskGO')+
+    '<div class="duelo">'+[
+      ['Encontrar um profissional','Buscar por indicação pode deixar informações e opções espalhadas.','Reunir busca por categoria e região, com informações para ajudar na escolha.'],
+      ['Ter uma referência de preço','Sem uma referência inicial, fica mais difícil planejar o serviço.','Apresentar uma estimativa antes do pedido e permitir combinar o valor com clareza.'],
+      ['Acompanhar o atendimento','Pedido, conversa e pagamento podem acabar em canais diferentes.','Organizar as etapas e a comunicação do serviço em um só fluxo.']
+    ].map(t=>'<div class="duelo-linha"><h3>'+t[0]+'</h3><div><small>Desafio</small><p>'+t[1]+'</p></div><div><small>Proposta TaskGO</small><p>'+t[2]+'</p></div></div>').join('')+'</div>')+
 
-  /* SEGURANÇA SPLIT */
-  '<section class="section"><div class="wrap"><div class="split lp-panel">'+
-  '<div class="lp-copy"><span class="eyebrow">'+ic('shield')+' Estado atual</span><h2>Transparência enquanto construímos.</h2>'+
-  '<p class="muted">A TaskGO ainda não está aberta para contratação. Estamos desenvolvendo e validando a plataforma antes do lançamento.</p>'+
-  '<ul class="list-check lp-list-neutral">'+[
-    'Ainda não há clientes nem profissionais cadastrados',
-    'Contratação e pagamentos não estão disponíveis',
-    'Verificação de identidade e garantias ainda não foram implementadas'
-  ].map(t=>'<li>'+ic('x')+'<span>'+t+'</span></li>').join('')+'</ul>'+
-  '<a class="btn btn-ghost" href="#/sobre">Conheça o projeto '+ic('arrow')+'</a></div>'+
-  '<div class="card lp-stage">'+
-    '<div class="lp-stage-head">'+ic('route')+'<b>Etapa atual do TaskGO</b></div>'+
-    '<p class="muted">Construção e validação da proposta com potenciais clientes e profissionais.</p>'+
-  '</div></div></div></section>'+
+  folha('dúvidas',duo('perguntas','frequentes')+
+    '<div class="faq-lista" style="margin-top:36px">'+faqList([7,6,2,0,1,5].map(i=>FAQ[i]))+'</div>'+
+    '<div class="setas">'+linkSeta('#/ajuda','Ver todas as perguntas')+'</div>')+
 
-  /* DESAFIOS E PROPOSTA */
-  '<section class="section"><div class="wrap">'+
-  '<div class="sec-head center"><span class="eyebrow">'+ic('route')+' Desafio × proposta</span><h2>O que queremos melhorar com a TaskGO</h2></div>'+
-  '<div class="grid g3">'+[
-    ['search','Encontrar um profissional','Buscar por indicação pode deixar informações e opções espalhadas.','Reunir busca por categoria e região, com informações para ajudar na escolha.'],
-    ['sparkle','Ter uma referência de preço','Sem uma referência inicial, fica mais difícil planejar o serviço.','Apresentar uma estimativa antes do pedido e permitir combinar o valor com clareza.'],
-    ['chat','Acompanhar o atendimento','Pedido, conversa e pagamento podem acabar em canais diferentes.','Organizar as etapas e a comunicação do serviço em um só fluxo.']
-  ].map(t=>'<article class="card lp-challenge"><div class="lp-challenge-head">'+ic(t[0])+'<h3>'+t[1]+'</h3></div>'+
-    '<div class="lp-challenge-item"><span class="lp-label">Desafio</span><p>'+t[2]+'</p></div>'+
-    '<div class="lp-challenge-item lp-challenge-answer"><span class="lp-label">Proposta TaskGO</span><p>'+t[3]+'</p></div></article>').join('')+'</div>'+
-  '</div></section>'+
-
-  /* FAQ */
-  '<section class="section"><div class="wrap lp-faq">'+
-  '<div class="sec-head center"><span class="eyebrow">'+ic('help')+' Dúvidas</span><h2>Perguntas frequentes</h2></div>'+faqList([7,6,2,0,1,5].map(i=>FAQ[i]))+
-  '<div class="lp-actions"><a class="btn btn-ghost" href="#/ajuda">Ver central de ajuda completa</a></div>'+
-  '</div></section>';
+  '<section class="folha fecho"><div class="wrap fecho-in"><div>'+duo('conte como','você trabalha')+
+    '<p class="corpo">Prefere falar antes de criar a conta? Sua mensagem fica registrada para a equipe.</p></div>'+
+    formContato()+'</div></section>';
 }
-function svcCard(s,nivel){
-  const t=nivel||3;
-  return '<a class="card card-hover svc" href="#/servicos/'+s.id+'"><div class="ico-box">'+ic(s.ico)+'</div>'+
-  '<h'+t+(t===2?' class="lp-card-title"':'')+'>'+s.n+'</h'+t+'><p>'+s.d+'</p>'+
-  '<div class="price"><span class="tag tag-muted">'+s.cat+'</span></div></a>';
-}
-

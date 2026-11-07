@@ -5,8 +5,8 @@ function openModal(html,opts){
   modalOpen=true;
   if(!$('#modal-root').contains(document.activeElement))modalOrigem=document.activeElement;
   $('#modal-root').innerHTML='<div class="modal-bg" data-close><div class="modal'+(opts.className?' '+opts.className:'')+'" role="dialog" aria-modal="true" tabindex="-1" style="'+(opts.wide?'max-width:640px':'')+'">'+html+'</div></div>';
-  enhanceInteractiveButtons($('#modal-root'));
   $('#modal-root .modal-bg').addEventListener('click',e=>{if(e.target.hasAttribute('data-close'))closeModal();});
+  ligarRotulos($('#modal-root'));
   const caixa=$('#modal-root .modal'),titulo=caixa.querySelector('h1,h2,h3');
   if(titulo)caixa.setAttribute('aria-label',titulo.textContent.trim());
   caixa.focus({preventScroll:true});

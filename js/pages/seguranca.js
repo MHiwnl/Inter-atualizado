@@ -1,21 +1,16 @@
 /* ---------- SEGURANÇA ---------- */
 function pageSeguranca(){
-  return '<section class="section"><div class="wrap">'+
-  '<div class="sec-head"><span class="eyebrow">'+ic('shield')+' Confiança & Segurança</span><h2>Como protegemos você</h2>'+
-  '<p>Segurança não é um recurso extra na TaskGO — é a base do produto.</p></div>'+
-  '<div class="grid g2">'+[
-    ['user','Verificação de identidade','Todo profissional envia documento oficial com foto, selfie biométrica e CPF validado na Receita Federal antes de ser aprovado.'],
-    ['key','Código de chegada','Código único de 4 dígitos por pedido. Sem a validação, o serviço não é iniciado no aplicativo.'],
-    ['nav','Rota monitorada','O deslocamento fica registrado. Você pode compartilhar o acompanhamento com um contato de confiança em um toque.'],
-    ['flag','Botão de emergência','Durante o atendimento, um toque aciona nosso time de segurança e, se necessário, as autoridades locais.'],
-    ['lock','Pagamento retido','O valor só é liberado ao profissional depois que você confirma a conclusão do serviço.'],
-    ['shield','Garantia de 90 dias','Problemas no serviço executado são reexecutados ou reembolsados conforme nossa política de garantia.']
-  ].map(x=>'<div class="card" style="display:flex;gap:16px"><div class="ico-box" style="flex:none">'+ic(x[0])+'</div>'+
-    '<div><b style="display:block;margin-bottom:6px">'+x[1]+'</b><span class="muted" style="font-size:.9rem">'+x[2]+'</span></div></div>').join('')+'</div>'+
-  '<div class="card" style="margin-top:36px;border-color:color-mix(in srgb,var(--danger) 40%,var(--line))">'+
-  '<div style="display:flex;gap:14px;align-items:center"><div class="ico-box" style="background:color-mix(in srgb,var(--danger) 14%,transparent);border-color:color-mix(in srgb,var(--danger) 30%,transparent)">'+ic('flag')+'</div>'+
-  '<div style="flex:1;min-width:220px"><b>Precisa de ajuda urgente?</b><p class="muted" style="font-size:.9rem">Nosso time de emergência responde 24 horas por dia, todos os dias.</p></div>'+
-  '<a class="btn btn-danger" href="#/contato">Acionar suporte</a></div></div>'+
-  '</div></section>';
+  return folha('segurança',duo('o que protege você','hoje, e o que ainda não',1)+
+    '<p class="corpo">A TaskGO está em desenvolvimento. Hoje nenhum pedido pode ser enviado, então o que depende de um pedido aparece como "Aguarda pedidos".</p>','cabeca')+
+  folha('recursos','<div class="recursos">'+[
+    ['espera','Endereço protegido','O contato e o endereço do cliente só vão aparecer para o profissional depois do aceite.'],
+    ['espera','Código de chegada','Um código de 4 dígitos por pedido vai confirmar o início do serviço.'],
+    ['espera','Localização compartilhada','Com permissão do profissional, a última posição vai aparecer durante o deslocamento. Não há rota nem registro do trajeto.'],
+    ['plan','Verificação de identidade','Ainda não existe. Nenhum documento, selfie ou CPF é validado hoje.'],
+    ['espera','Ligação de emergência','Durante um pedido, o painel vai levar direto às ligações para 190 e 192. A TaskGO não tem equipe de segurança de plantão.'],
+    ['plan','Pagamento retido','Ainda não existe. A plataforma não processa nem guarda pagamentos.'],
+    ['plan','Garantia do serviço','Ainda não existe. A TaskGO não oferece garantia nem cobertura de danos.']
+  ].map(x=>'<div class="recurso"><div class="recurso-topo"><h2 class="sub">'+x[1]+'</h2>'+statusTag(x[0])+'</div><p>'+x[2]+'</p></div>').join('')+'</div>'+
+  '<p class="aviso-linha mt-grande"><b>Em uma emergência,</b> ligue para a Polícia Militar (190) ou o SAMU (192). Para outros assuntos, fale com a equipe pelo formulário.</p>'+
+  '<div class="setas">'+linkSeta('#/contato','Falar com a equipe')+'</div>','folha-densa');
 }
-

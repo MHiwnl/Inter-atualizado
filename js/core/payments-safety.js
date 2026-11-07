@@ -25,7 +25,7 @@ function assinar(nome){if(nome==='Empresas')return go('/contato');toast('Assinat
 function confirmarPlano(){toast('Nenhuma assinatura foi ativada: pagamento indisponível.','err');}
 function dashPlano(){
   return dashHead('Planos','Assinaturas e benefícios pagos ainda não estão habilitados.')+
-    '<div class="card"><h3>TaskGO Plus indisponível</h3><p class="muted" style="margin-top:10px">Informações demonstrativas de planos não representam uma assinatura ativa. Nenhuma cobrança pode ser feita neste ambiente.</p></div>';
+    '<div class="card"><h2 class="sub">TaskGO Plus indisponível</h2><p class="muted" style="margin-top:10px">Informações demonstrativas de planos não representam uma assinatura ativa. Nenhuma cobrança pode ser feita neste ambiente.</p></div>';
 }
 
 let financePageData=null,financePageLoading=false,financePageError='',financePageUserId=null;
@@ -49,16 +49,16 @@ async function carregarCarteiraFinanceira(){
 }
 function dashCarteira(){
   if(DEMO_MODE)return dashHead('Carteira demonstrativa','Os valores abaixo são fictícios e não representam dinheiro real.')+
-    '<div class="card"><h3>Dados de demonstração</h3><p class="muted" style="margin-top:10px">Não é possível adicionar saldo, receber pagamentos ou sacar neste ambiente.</p></div>';
+    '<div class="card"><h2 class="sub">Dados de demonstração</h2><p class="muted" style="margin-top:10px">Não é possível adicionar saldo, receber pagamentos ou sacar neste ambiente.</p></div>';
   if(financePageUserId!==me()?.id){financePageData=null;financePageError='';financePageUserId=me()?.id||null;}
   if(!financePageData&&!financePageLoading)carregarCarteiraFinanceira();
   const body=financePageLoading?'<div class="card" role="status">Consultando carteira no servidor…</div>':
-    financePageError?'<div class="card"><h3>Carteira indisponível</h3><p class="muted" style="margin-top:10px">'+esc(financePageError)+'</p><button class="btn btn-ghost" onclick="financePageData=null;financePageError=\'\';carregarCarteiraFinanceira()">Tentar novamente</button></div>':
+    financePageError?'<div class="card"><h2 class="sub">Carteira indisponível</h2><p class="muted" style="margin-top:10px">'+esc(financePageError)+'</p><button class="btn btn-ghost" onclick="financePageData=null;financePageError=\'\';carregarCarteiraFinanceira()">Tentar novamente</button></div>':
     !financePageData?'<div class="card">Entre novamente com uma conta persistida para consultar a carteira.</div>':
-    '<div class="grid g3" style="margin-bottom:18px">'+[['Disponível',financePageData.wallet.disponivel],['Pendente',financePageData.wallet.pendente],['Bloqueado',financePageData.wallet.bloqueado]].map(item=>'<div class="card"><span class="muted">'+item[0]+'</span><h3 style="margin-top:8px">'+money(item[1])+'</h3></div>').join('')+'</div>'+ 
-    '<div class="card" style="margin-bottom:18px"><h3>Movimentações financeiras</h3><p class="muted" style="margin-top:8px">Créditos só aparecem após confirmação verificável do provedor. Saques solicitados ficam pendentes até processamento operacional.</p></div>'+ 
-    '<div class="card"><h3>Extrato</h3>'+(financePageData.transactions.content?.length?financePageData.transactions.content.map(tx=>'<div style="display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)"><span>'+esc(tx.tipo)+' · '+esc(tx.status)+'</span><b>'+money(tx.valor)+'</b></div>').join(''):'<p class="muted" style="margin-top:10px">Nenhuma movimentação registrada no servidor.</p>')+'</div>'+ 
-    (financePageData.withdrawals.length?'<div class="card" style="margin-top:18px"><h3>Solicitações de saque</h3>'+financePageData.withdrawals.map(item=>'<p class="muted" style="margin-top:8px">'+money(item.valor)+' · '+esc(item.status)+' · '+new Date(item.criadaEm).toLocaleString('pt-BR')+'</p>').join('')+'</div>':'');
+    '<div class="grid g3" style="margin-bottom:18px">'+[['Disponível',financePageData.wallet.disponivel],['Pendente',financePageData.wallet.pendente],['Bloqueado',financePageData.wallet.bloqueado]].map(item=>'<div class="card"><span class="muted">'+item[0]+'</span><h2 class="sub" style="margin-top:8px">'+money(item[1])+'</h2></div>').join('')+'</div>'+ 
+    '<div class="card" style="margin-bottom:18px"><h2 class="sub">Movimentações financeiras</h2><p class="muted" style="margin-top:8px">Créditos só aparecem após confirmação verificável do provedor. Saques solicitados ficam pendentes até processamento operacional.</p></div>'+ 
+    '<div class="card"><h2 class="sub">Extrato</h2>'+(financePageData.transactions.content?.length?financePageData.transactions.content.map(tx=>'<div style="display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)"><span>'+esc(tx.tipo)+' · '+esc(tx.status)+'</span><b>'+money(tx.valor)+'</b></div>').join(''):'<p class="muted" style="margin-top:10px">Nenhuma movimentação registrada no servidor.</p>')+'</div>'+ 
+    (financePageData.withdrawals.length?'<div class="card" style="margin-top:18px"><h2 class="sub">Solicitações de saque</h2>'+financePageData.withdrawals.map(item=>'<p class="muted" style="margin-top:8px">'+money(item.valor)+' · '+esc(item.status)+' · '+new Date(item.criadaEm).toLocaleString('pt-BR')+'</p>').join('')+'</div>':'');
   return dashHead('Carteira','Saldo e extrato consultados no servidor. Movimentações dependem de confirmação e processamento.')+body;
 }
 
