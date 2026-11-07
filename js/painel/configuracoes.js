@@ -5,12 +5,13 @@ function dashConfig(){
   '<div class="grid g2" style="grid-template-columns:.4fr 1.6fr;align-items:start">'+
   '<div class="card"><div style="text-align:center">'+
   '<div style="position:relative;width:110px;margin:0 auto">'+avatar(u,110).replace('class="avatar"','class="avatar" style="margin:0 auto;width:110px;height:110px;font-size:40px"')+
-  '<button class="icon-btn" aria-label="Trocar foto" style="position:absolute;bottom:0;right:0;background:var(--brand);border-color:var(--brand)" onclick="document.getElementById(\'fotoIn\').click()">'+ic('camera').replace('class="ic "','class="ic" style="stroke:#fff"')+'</button></div>'+
+  '<button class="icon-btn foto-trocar" aria-label="Trocar foto" onclick="document.getElementById(\'fotoIn\').click()">'+ic('camera')+'</button></div>'+
   '<input type="file" id="fotoIn" accept="image/*" class="hide" onchange="trocarFoto(this)">'+
   '<b style="display:block;margin-top:14px">'+esc(u.name)+'</b>'+
   '<span class="muted" style="font-size:.84rem">'+(isPro?(u.service?svc(u.service).n:'Categoria não informada'):'Cliente')+'</span>'+
   '<div style="margin-top:10px">'+(isPro?'<span class="tag tag-warn">Verificação não disponível</span>':'<span class="tag tag-info">'+ic('shield')+' Conta ativa</span>')+'</div>'+
   '<button class="btn btn-ghost btn-sm btn-block" style="margin-top:14px" onclick="document.getElementById(\'fotoIn\').click()">Trocar foto</button>'+
+  (u.photo?'<button class="btn btn-ghost btn-sm btn-block" style="margin-top:8px" onclick="abrirEditorFoto(me().photo)">Ajustar foto</button>':'')+
   (u.photo?'<button class="btn btn-danger btn-sm btn-block" style="margin-top:8px" onclick="saveUser({photo:null});toast(\'Foto removida\');render()">Remover foto</button>':'')+
   '</div></div>'+
   '<div>'+
@@ -53,18 +54,10 @@ async function salvarPerfil(e){
   try{await saveUser(patch);toast('Perfil atualizado com sucesso!','ok');render();}catch(error){toast(error.message||'Não foi possível salvar o perfil.','err');}
 }
 function trocarFoto(input){
-  const file=input.files&&input.files[0];if(!file)return;
+  const file=input.files&&input.files[0];input.value='';if(!file)return;
+  if(!/^image\//.test(file.type))return toast('Escolha um arquivo de imagem.','err');
   const rd=new FileReader();
-  rd.onload=()=>{
-    const img=new Image();
-    img.onload=()=>{
-      const c=document.createElement('canvas'),S2=240;c.width=S2;c.height=S2;
-      const ctx=c.getContext('2d'),m=Math.min(img.width,img.height);
-      ctx.drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,S2,S2);
-      saveUser({photo:c.toDataURL('image/jpeg',.82)});toast('Foto de perfil atualizada!','ok');render();
-    };
-    img.src=rd.result;
-  };
+  rd.onload=()=>abrirEditorFoto(rd.result);
   rd.readAsDataURL(file);
 }
 async function toggleNotif(k){const u=me(),next={...(u.notif||{}),[k]:!u.notif?.[k]};try{await saveUser({notif:next});render();}catch(error){toast(error.message||'Não foi possível salvar a preferência.','err');}}

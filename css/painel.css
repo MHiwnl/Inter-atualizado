@@ -141,3 +141,18 @@ table.tb td{padding:13px 12px;border-bottom:1px solid var(--line)}
 .demo-note{margin-top:10px;font-size:.76rem;color:var(--text-2)}
 .demo-note summary{cursor:pointer}
 .demo-note-content{display:block;margin-top:7px;line-height:1.5}
+/* Botão da câmera sobre o avatar: fundo da página e contorno forte, para não sumir no azul. */
+.foto-trocar{position:absolute;right:-2px;bottom:-2px;width:36px;height:36px;border-radius:50%;background:var(--bg);border:2px solid var(--text)}
+.foto-trocar svg{width:16px;height:16px;stroke:var(--text)}
+.foto-trocar:hover{background:var(--text)}
+.foto-trocar:hover svg{stroke:var(--bg)}
+/* Editor da foto de perfil */
+.modal-foto{max-width:360px}
+.foto-palco{position:relative;width:260px;height:260px;margin:0 auto;overflow:hidden;background:var(--surface-2);cursor:grab;touch-action:none;user-select:none}
+.foto-palco.arrastando{cursor:grabbing}
+.foto-palco img{position:absolute;left:50%;top:50%;max-width:none;pointer-events:none}
+.foto-mascara{position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 200px color-mix(in srgb,var(--bg) 62%,transparent);outline:2px solid var(--text);outline-offset:-2px;pointer-events:none}
+.foto-palco:focus-visible{outline:2px solid var(--focus);outline-offset:4px}
+.foto-zoom{display:flex;align-items:center;gap:10px;margin:18px 0 6px}
+.foto-zoom .sim-range{flex:1}
+.foto-acoes{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
