@@ -12,8 +12,7 @@ Plataforma web para aproximar pessoas que precisam de serviços locais de profis
 - [Recursos de destaque recentes](#recursos-de-destaque-recentes)
 - [Estrutura de arquivos](#estrutura-de-arquivos)
 - [Segurança e autenticação](#segurança-e-autenticação)
-- [Como executar localmente](#como-executar-localmente)
-- [Como executar via Docker](#como-executar-via-docker)
+- [Como executar](#como-executar)
 - [Manutenção e otimização do banco de dados](#manutenção-e-otimização-do-banco-de-dados)
 - [Testes](#testes)
 - [Limitações e problemas conhecidos](#limitações-e-problemas-conhecidos)
@@ -111,7 +110,9 @@ TaskGO
 ├── index.html                  # Página única; carrega todo o CSS e JS
 ├── favicon.svg
 ├── .env.example                # Modelo de variáveis locais
-├── docker-compose.yml          # PostgreSQL local
+├── docker-compose.yml          # Banco, API e site para desenvolvimento
+├── docker/nginx.conf           # Serve o site e repassa /api para a API
+├── iniciar.ps1 / parar.ps1     # Sobem e param o ambiente com um comando
 ├── assets/                     # Vídeos
 ├── css/
 │   ├── base.css                # Cores (tokens), reset e tipografia base
@@ -182,118 +183,69 @@ TaskGO
 
 Detalhes em [docs/seguranca-autenticacao.md](docs/seguranca-autenticacao.md) e [backend/AUTH_RECOVERY.md](backend/AUTH_RECOVERY.md).
 
-## Como executar localmente
+## Como executar
 
-**Pré-requisitos:** JDK 17, Maven 3.9 ou superior, PostgreSQL 14 ou superior e um servidor estático (Live Server do VS Code ou Python).
+**Pré-requisito:** [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado. Não precisa instalar Java, Maven nem PostgreSQL.
 
-**1. Crie o banco** com um usuário administrador do PostgreSQL:
-
-```sql
-CREATE ROLE taskgo_app LOGIN PASSWORD 'troque-por-uma-senha-local';
-CREATE DATABASE taskgo_db OWNER taskgo_app;
-```
-
-**2. Inicie a API** no PowerShell:
+Na raiz do projeto, no PowerShell:
 
 ```powershell
-$env:DB_URL = "jdbc:postgresql://localhost:5432/taskgo_db"
-$env:DB_USERNAME = "taskgo_app"
-$env:DB_PASSWORD = "troque-por-uma-senha-local"
-$env:TASKGO_CORS_ALLOWED_ORIGINS = "http://localhost:5500"
-cd backend
-mvn spring-boot:run "-Dspring-boot.run.profiles=dev"
+.\iniciar.ps1
 ```
 
-O Flyway cria as tabelas na primeira execução.
+O script abre o Docker Desktop se ele estiver fechado, cria o arquivo `.env` com uma senha aleatória para o banco, sobe banco, API e site e abre <http://localhost:3000>. Na primeira vez, a compilação da API leva alguns minutos.
 
-**3. Aponte o frontend para a API** em `js/taskgo-config.js`. Não faça commit dessa alteração:
+> [!TIP]
+> Se o PowerShell bloquear o script, use `powershell -ExecutionPolicy Bypass -File .\iniciar.ps1`.
 
-```js
-window.TASKGO_CONFIG = { apiBaseUrl: 'http://localhost:8080' };
-```
+Para ver só a interface, com dados fictícios e sem banco, abra <http://localhost:3000/index.html?demo=1>.
 
-**4. Sirva o frontend** a partir da raiz do projeto, em um segundo terminal:
-
-```powershell
-python -m http.server 5500
-```
-
-**5. Abra <http://localhost:5500/index.html>.**
-
-> [!IMPORTANT]
-> Use `localhost`, **não** `127.0.0.1`. O Live Server costuma abrir `127.0.0.1:5500`, e nesse endereço o cadastro falha com "Não foi possível iniciar uma solicitação segura", porque o navegador não consegue ler o cookie CSRF. Basta trocar o endereço na barra do navegador.
-
-Para ver a interface sem backend, abra `http://localhost:5500/index.html?demo=1`.
-
-## Como executar via Docker
-
-Este caminho dispensa instalar Java, Maven e PostgreSQL. O banco usa a porta `55432` para não conflitar com um PostgreSQL já instalado. Os comandos são para PowerShell, executados na raiz do projeto, com o Docker Desktop aberto.
-
-**1. Crie o arquivo `.env`** e troque `DB_PASSWORD` por uma senha forte. O git ignora esse arquivo.
-
-```powershell
-Copy-Item .env.example .env
-notepad .env
-```
-
-**2. Crie a rede e o banco:**
-
-```powershell
-$senha = (Select-String -Path .env -Pattern '^DB_PASSWORD=(.*)$').Matches.Groups[1].Value
-docker network create taskgo-dev
-docker run -d --name taskgo-dev-db --network taskgo-dev --restart unless-stopped `
-  -e POSTGRES_DB=taskgo_db -e POSTGRES_USER=taskgo_app -e POSTGRES_PASSWORD=$senha `
-  -p 127.0.0.1:55432:5432 -v taskgo-dev-db:/var/lib/postgresql/data postgres:16
-```
-
-**3. Compile e inicie a API.** A primeira compilação leva alguns minutos.
-
-```powershell
-docker build -t taskgo-api:dev backend
-docker run -d --name taskgo-dev-api --network taskgo-dev --restart unless-stopped --env-file .env `
-  -e SPRING_PROFILES_ACTIVE=dev `
-  -e DB_URL=jdbc:postgresql://taskgo-dev-db:5432/taskgo_db `
-  -e MANAGEMENT_HEALTH_MAIL_ENABLED=false `
-  -p 127.0.0.1:8080:8080 taskgo-api:dev
-```
-
-**4. Confirme que a API subiu.** A resposta esperada é `{"status":"UP"}`.
-
-```powershell
-curl.exe http://localhost:8080/actuator/health
-```
-
-**5. Sirva o frontend** como nos passos 3 a 5 de [Como executar localmente](#como-executar-localmente).
+**Como funciona:** o `docker-compose.yml` sobe três serviços. O `web` (nginx) serve o site e repassa `/api` para a API pelo mesmo endereço, então não há CORS nem configuração no frontend. Só a porta 3000 fica exposta, e só nesta máquina; banco e API ficam na rede interna do Docker. As pastas do site são montadas direto do projeto: depois de editar CSS ou JS, basta recarregar a página.
 
 **Comandos do dia a dia**
 
 | Ação | Comando |
 |---|---|
-| Parar | `docker stop taskgo-dev-api taskgo-dev-db` |
-| Iniciar de novo | `docker start taskgo-dev-db taskgo-dev-api` |
-| Ver logs da API | `docker logs -f taskgo-dev-api` |
-| Atualizar a API | `docker rm -f taskgo-dev-api`, depois repita o passo 3 |
-| Apagar o banco local e **todos os seus dados** | `docker rm -f taskgo-dev-db` e `docker volume rm taskgo-dev-db` |
+| Subir tudo | `.\iniciar.ps1` |
+| Parar | `.\parar.ps1` |
+| Ver logs da API | `docker compose logs -f api` |
+| Aplicar mudanças no backend (Java) | `docker compose up -d --build api` |
+| Abrir o banco no terminal | `docker compose exec db psql -U taskgo_app -d taskgo_db` |
+| Apagar o banco local e **todos os seus dados** | `docker compose down`, depois `docker volume rm taskgo-dev-db` |
 
 > [!NOTE]
-> `docker compose up -d postgres` também inicia um banco, usando `DB_PASSWORD` do ambiente, mas na porta `5432`. Ele não inicia a API e entra em conflito com um PostgreSQL já instalado nessa porta.
+> O banco usa o volume `taskgo-dev-db`, o mesmo do roteiro antigo, então contas já cadastradas continuam. Na subida, o Docker avisa que o volume "não foi criado pelo Docker Compose"; o aviso pode ser ignorado. Se ainda existirem os contêineres antigos `taskgo-dev-db` e `taskgo-dev-api`, o `iniciar.ps1` os para antes de subir, para não abrirem o mesmo banco ao mesmo tempo.
+
+### Sem Docker (avançado)
+
+Requer JDK 17, Maven 3.9 ou superior e PostgreSQL 14 ou superior. Crie o banco com `CREATE ROLE taskgo_app LOGIN PASSWORD '...'` e `CREATE DATABASE taskgo_db OWNER taskgo_app`, depois inicie a API:
+
+```powershell
+$env:DB_URL = "jdbc:postgresql://localhost:5432/taskgo_db"
+$env:DB_USERNAME = "taskgo_app"
+$env:DB_PASSWORD = "sua-senha"
+cd backend
+mvn spring-boot:run "-Dspring-boot.run.profiles=dev"
+```
+
+Em outro terminal, na raiz, sirva o site com `python -m http.server 5500` e, só na sua máquina, aponte o frontend para a API em `js/taskgo-config.js` com `apiBaseUrl: 'http://localhost:8080'`. Abra <http://localhost:5500/index.html> usando `localhost`, não `127.0.0.1`: nesse endereço o navegador não lê o cookie CSRF e o cadastro falha.
 
 ## Manutenção e otimização do banco de dados
 
-Os exemplos usam o contêiner `taskgo-dev-db`. Em produção, execute o SQL na instância do provedor. Consultas de diagnóstico abrem com:
+Os exemplos usam o serviço `db` do `docker-compose.yml`. Em produção, execute o SQL na instância do provedor. Consultas de diagnóstico abrem com:
 
 ```powershell
-docker exec -it taskgo-dev-db psql -U taskgo_app -d taskgo_db
+docker compose exec db psql -U taskgo_app -d taskgo_db
 ```
 
 ### Backup e restauração
 
-Faça um backup antes de qualquer migração. Gere o arquivo dentro do contêiner e copie com `docker cp`, para que o redirecionamento do PowerShell não corrompa o conteúdo binário:
+Faça um backup antes de qualquer migração. Gere o arquivo dentro do contêiner e copie com `docker compose cp`, para que o redirecionamento do PowerShell não corrompa o conteúdo binário:
 
 ```powershell
-docker exec taskgo-dev-db pg_dump -U taskgo_app -d taskgo_db --format=custom --no-owner --file=/tmp/taskgo.dump
-docker cp taskgo-dev-db:/tmp/taskgo.dump ./taskgo-backup.dump
-docker exec taskgo-dev-db rm /tmp/taskgo.dump
+docker compose exec db pg_dump -U taskgo_app -d taskgo_db --format=custom --no-owner --file=/tmp/taskgo.dump
+docker compose cp db:/tmp/taskgo.dump ./taskgo-backup.dump
+docker compose exec db rm /tmp/taskgo.dump
 ```
 
 Para restaurar em uma instância **vazia** de homologação:
